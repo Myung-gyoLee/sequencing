@@ -1,0 +1,16 @@
+(star) bi2@bi2-B365M-DS3H:~/00ref/STAR38$ STAR --runThreadN 1 --runMode genomeGenerate --genomeDir ~/00ref/STAR38 --genomeFastaFiles ~/00ref/ensembl/Homo_sapiens.GRCh38.dna.primary_assembly.fa --sjdbGTFfile ~/00ref/ensembl/Homo_sapiens.GRCh38.97.gtf --sjdbOverhang 150
+Oct 25 17:55:16 ..... started STAR run
+Oct 25 17:55:16 ... starting to generate Genome files
+Oct 25 17:55:59 ... starting to sort Suffix Array. This may take a long time...
+Oct 25 17:56:09 ... sorting Suffix Array chunks and saving them to disk...
+Oct 25 19:55:48 ... loading chunks from disk, packing SA...
+Oct 25 19:56:42 ... finished generating suffix array
+Oct 25 19:56:42 ... generating Suffix Array index
+Oct 25 19:59:19 ... completed Suffix Array index
+Oct 25 19:59:19 ..... processing annotations GTF
+Oct 25 19:59:27 ..... inserting junctions into the genome indices
+Oct 25 20:10:24 ... writing Genome to disk ...
+Oct 25 20:10:25 ... writing Suffix Array to disk ...
+Oct 25 20:10:33 ... writing SAindex to disk
+Oct 25 20:10:34 ..... finished successfully
+
