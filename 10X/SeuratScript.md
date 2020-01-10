@@ -37,3 +37,19 @@ plot2 <- FeatureScatter(SMC009, feature1 = "nCount_RNA", feature2 = "nFeature_RN
 png(filename="QC_scatter_SMC009.png",width = 800, height=600)
 CombinePlots(plots=list(plot1, plot2))
 dev.off()
+
+
+## run sctransform
+
+SMC009 <- SCTransform(SMC009, vars.to.regress = "percent.mt", conserve.memory = TRUE, verbose = FALSE)
+
+### save data
+save(SMC009, file = "CMC009_10X_Seurat_SCT.Rdata")
+
+
+## run PCA
+SMC009 <- RunPCA(SMC009, verbose = FALSE)
+
+
+## save data
+save(SMC009, file = "CMC009_10X_Seurat_PCA.Rdata")
