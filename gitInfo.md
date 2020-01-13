@@ -14,7 +14,7 @@ git push -u origin master
 …or push an existing repository from the command line
 """
 cd /home/cytogenbi2/github/sequencing
-git remote add origin https://github.com/demittsse/sequencing.git
+#git remote add origin https://github.com/demittsse/sequencing.git
 git push -u origin master
 """
 …or import code from another repository
