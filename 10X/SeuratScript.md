@@ -1,6 +1,6 @@
-'''
+```
 conda activate scrna
-'''
+
 
 ## load library
 library(Seurat)
@@ -44,7 +44,7 @@ dev.off()
 SMC009 <- SCTransform(SMC009, vars.to.regress = "percent.mt", conserve.memory = TRUE, verbose = FALSE)
 
 ### save data
-save(SMC009, file = "CMC009_10X_Seurat_SCT.Rdata")
+save(SMC009, file = "CMC009_01_10X_Seurat_SCT.Rdata")
 
 
 ## run PCA
@@ -52,4 +52,5 @@ SMC009 <- RunPCA(SMC009, verbose = FALSE)
 
 
 ## save data
-save(SMC009, file = "CMC009_10X_Seurat_PCA.Rdata")
+save(SMC009, file = "CMC009_02_10X_Seurat_PCA.Rdata")
+```
