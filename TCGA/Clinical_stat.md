@@ -4,8 +4,8 @@ setwd
 clin_BRCA = read.table("/media/cytogenbi2/6eaf3ba8-a866-4e8a-97ef-23c61f7da612/BreastCancer/data/etc/TCGAStemness/BRCAClinmut.tsv", header = TRUE, sep = "\t")
 
 > table(clin_BRCA$metastatic_breast_carcinoma_immunohistochemistry_pr_pos_cell_score)
-'[Not Available]
-            694'
+'''[Not Available]
+            694'''
 
 > table(clin_BRCA$metastatic_breast_carcinoma_her2_erbb_method_calculation_method_text)
 
