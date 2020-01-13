@@ -17,3 +17,9 @@ clin_BRCA = read.table("/media/cytogenbi2/6eaf3ba8-a866-4e8a-97ef-23c61f7da612/B
 library(dplyr)
 BRCAmutMod=clin_BRCA[,sapply(clin_BRCA, nlevels)>1]
 ##### colnames(clin_BRCA) #57 BRCAmutMod column colnames(BRCAmutMod)  #53
+
+```ruby
+require 'redcarpet'
+markdown = Redcarpet.new("Hello World!")
+puts markdown.to_html
+```
