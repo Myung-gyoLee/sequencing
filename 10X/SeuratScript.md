@@ -1,26 +1,26 @@
-```
+```bash
 conda activate scrna
 ```
 
 ## load library
-```
+```r
 library(Seurat)
 library(dplyr)
 library(ggplot2)
 library(sctransform)
 ```
 ## set working directory
-```
+```r
 setwd("/media/cytogenbi2/8e7f6c8b-bc45-4c58-816f-a062fd95b91a/10X/HN00119076_10X/HN00119076_10X_RawData_Outs/10X_009/H72NHCCX2/seurat_10X_SMC009")
 ```
 
 ## Read 10x data
-```
+```r
 cellranger.data <- Read10X(data.dir = "/media/cytogenbi2/8e7f6c8b-bc45-4c58-816f-a062fd95b91a/10X/HN00119076_10X/HN00119076_10X_RawData_Outs/10X_009/H72NHCCX2/run_count_10X_009/outs/filtered_feature_bc_matrix")
 ```
 
 ## create seurat object
-```r 
+```r
 SMC009 <- CreateSeuratObject(counts = cellranger.data, project = "SMC009", min.cells = 3, min.features = 200)
 
 SMC009 <- PercentageFeatureSet(SMC009, pattern="^MT-", col.name = "percent.mt")
