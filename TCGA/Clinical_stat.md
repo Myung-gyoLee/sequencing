@@ -75,6 +75,19 @@ patientD3
 patientD4=addFollowup(patientD3,follow40nte,"follow_up_v4.0_nte_brca")
 patientD4
 
+# write txt file
+
+ouf=open("/media/cytogenbi2/6eaf3ba8-a866-4e8a-97ef-23c61f7da612/BreastCancer/data/etc/GDC_Harmonized/clinical_data/stat/200116track_TCGA_BRCA_clinical_form.txt","w")
+
+for wline in patientD4.keys():
+    outline="%s\t%s\n"%(wline, str(patientD4[wline]))
+    print(outline)
+    ouf.write(outline)
+
+ouf.close()
+
+with open('/media/cytogenbi2/6eaf3ba8-a866-4e8a-97ef-23c61f7da612/BreastCancer/data/etc/GDC_Harmonized/clinical_data/stat/200116track_TCGA_BRCA_clinical.txt','w') as f:
+    print(patientD4, file = f)
 '''
 # code test
 patientD1={}
