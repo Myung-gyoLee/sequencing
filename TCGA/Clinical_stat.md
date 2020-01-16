@@ -1,3 +1,120 @@
+# python  tracking TCGA patient
+## read txt file of TCGA BCR and readline()
+```python
+txtdir="/media/cytogenbi2/6eaf3ba8-a866-4e8a-97ef-23c61f7da612/BreastCancer/data/etc/GDC_Harmonized/clinical_data/txt/"
+
+drugf=open("%snationwidechildrens.org_clinical_drug_brca.txt"%(txtdir))
+drug_brca=drugf.readlines()
+drugf.close()
+
+follow15f=open("%snationwidechildrens.org_clinical_follow_up_v1.5_brca.txt"%txtdir)
+follow15=follow15f.readlines()
+follow15f.close()
+
+follow21f=open("%snationwidechildrens.org_clinical_follow_up_v2.1_brca.txt"%txtdir)
+follow21=follow21f.readlines()
+follow21f.close()
+
+follow40f=open("%snationwidechildrens.org_clinical_follow_up_v4.0_brca.txt"%txtdir)
+follow40=follow40f.readlines()
+follow40f.close()
+
+
+follow40ntef=open("%snationwidechildrens.org_clinical_follow_up_v4.0_nte_brca.txt"%txtdir)
+follow40nte=follow40_ntef.readlines()
+follow40ntef.close()
+
+
+ntef=open("%snationwidechildrens.org_clinical_nte_brca.txt"%txtdir)
+nte=ntef.readlines()
+ntef.close()
+
+patientf=open("%snationwidechildrens.org_clinical_patient_brca.txt"%txtdir)
+patient=patientf.readlines()
+patientf.close()
+
+```
+
+## from patient_brca get key of Dictionary
+>>> patient[0].split("\t")[1]
+'bcr_patient_barcode'
+
+```python
+# function addFollowup
+def addFollowup(patientD,follow,table_name):
+    ExPatient=[];barcodel=[]
+    for fline in follow:
+        barcode=fline.split("\t")[1]
+        if "TCGA" not in barcode:
+            print(barcode)
+        else :
+            barcodel.append(barcode)
+    print(barcodel)
+    for key, value in patientD.items():
+        if "TCGA" not in key:
+            continue
+        elif key not in barcodel:
+            patientD[key]+="\t"
+        elif key in barcodel:
+            patientD[key]+="\t%s"%(table_name)    
+    print(ExPatient)
+    return patientD
+
+
+# execute
+patientD={pline.split("\t")[1]:"patient_BRCA" for pline in patient}
+
+patientD1=addFollowup(patientD,follow15,"follow_up_v1.5_brca")
+
+patientD2=addFollowup(patientD1,follow21,"follow_up_v2.1_brca")
+patientD2
+
+patientD3=addFollowup(patientD2,follow40,"follow_up_v4.0_brca")
+patientD3
+
+patientD4=addFollowup(patientD3,follow40nte,"follow_up_v4.0_nte_brca")
+patientD4
+
+'''
+# code test
+patientD1={}
+ExPatient=[];barcodel=[]
+for fline in follow15:
+    barcode=fline.split("\t")[1]
+    if "TCGA" not in barcode:
+        print(barcode)
+    else :
+        barcodel.append(barcode)
+
+print(barcodel)
+for key, value in patientD.items():
+    if "TCGA" not in key:
+        continue
+    elif key not in barcodel:
+        patientD[key]+="\t"
+    elif key in barcodel:
+        patientD[key]+="\t%s"%("follow_up_v1.5_brca")
+
+
+print(ExPatient)
+patientD
+'''
+'''
+def addFollowup(patientD,follow,table_name):
+    ExPatient=[]
+    for fline in follow:
+        barcode=fline.split("\t")[1]
+        if "TCGA" not in barcode:
+            print(barcode)
+        elif barcode in patientD.keys():
+            patientD[barcode]+="\t%s"%(table_name)
+        else :
+            ExPatient.append(barcode)
+    print(ExPatient)
+    return patientD
+
+'''
+
 ### read BRCA Clinical file
 setwd
 ## Stemness
@@ -5,7 +122,7 @@ setwd
 clin_BRCA = read.table("/media/cytogenbi2/6eaf3ba8-a866-4e8a-97ef-23c61f7da612/BreastCancer/data/etc/TCGAStemness/BRCAClinmut.tsv", header = TRUE, sep = "\t")
 ```
 
-## TCGA GDC
+## read TCGA GDC
 ```r
 
 txtdir="/media/cytogenbi2/6eaf3ba8-a866-4e8a-97ef-23c61f7da612/BreastCancer/data/etc/GDC_Harmonized/clinical_data/txt/"
@@ -28,7 +145,7 @@ omf_v4.0_brca=read.table("nationwidechildrens.org_clinical_omf_v4.0_brca.txt", h
 
 patient_brca=read.table("nationwidechildrens.org_clinical_patient_brca.txt", header = TRUE, sep = "\t")
 
-patient_brca=read.table("clinical_patient_brca.csv", header = TRUE, sep = "\t", fill = TRUE)
+#patient_brca=read.table("clinical_patient_brca.csv", header = TRUE, sep = "\t", fill = TRUE)
 
 
 radiation_brca=read.table("nationwidechildrens.org_clinical_radiation_brca.txt", header = TRUE, sep = "\t")
