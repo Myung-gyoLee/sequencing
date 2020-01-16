@@ -225,16 +225,22 @@ setdiff(pat_bar,fu21_bar)
 setdiff(pat_bar,fu40_bar)
 setdiff(pat_bar,fu40nte_bar)
 setdiff(pat_bar,nte_bar)
-```
-
-## intersect patient_brca vs other
-```r
 
 setdiff(pat_bar,fu15_bar)
 setdiff(pat_bar,fu21_bar)
 setdiff(pat_bar,fu40_bar)
 setdiff(pat_bar,fu40nte_bar)
 setdiff(pat_bar,nte_bar)
+```
+
+## intersect patient_brca vs other
+```r
+
+intersect(pat_bar,fu15_bar)
+intersect(pat_bar,fu21_bar)
+intersect(pat_bar,fu40_bar)
+intersect(pat_bar,fu40nte_bar)
+intersect(pat_bar,nte_bar)
 ```
 #---------------------------
 ## setdiff() result
