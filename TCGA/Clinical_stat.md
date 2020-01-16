@@ -129,6 +129,8 @@ detach(patient_brca)
 head(pat_bar)
 ```
 #---------------------------
+## get length of barcode id per table
+```r
 length(
 
 length(fu15_bar)
@@ -138,6 +140,11 @@ length(fu40nte_bar)
 length(nte_bar)
 length(pat_bar)
 
+```
+
+## variable of TCGA clinical data
+
+```
 $fu15_bar
 $fu21_bar
 $fu40_bar
@@ -152,15 +159,20 @@ fu40_fubar
 fu40nte_fubar
 nte_fubar
 pat_fubar
+
 #---------------------------
+## subtype information table
 follow_up_v1.5_brca
 follow_up_v2.1_brca     
 follow_up_v4.0_brca
 follow_up_v4.0_nte_brca
 nte_brca
 patient_brca
+```
 
 #---------------------------
+## Total BCR information table
+```
 drug_brca               
 follow_up_v1.5_brca
 follow_up_v2.1_brca     
@@ -170,8 +182,9 @@ nte_brca
 omf_v4.0_brca           
 patient_brca
 radiation_brca
+```
 #---------------------------
-
+```
 setdiff(fu15_bar,fu21_bar)
 setdiff(fu15_bar,fu40_bar)
 setdiff(fu15_bar,fu40nte_bar)
@@ -212,7 +225,17 @@ setdiff(pat_bar,fu21_bar)
 setdiff(pat_bar,fu40_bar)
 setdiff(pat_bar,fu40nte_bar)
 setdiff(pat_bar,nte_bar)
+```
 
+## intersect patient_brca vs other
+```r
+
+setdiff(pat_bar,fu15_bar)
+setdiff(pat_bar,fu21_bar)
+setdiff(pat_bar,fu40_bar)
+setdiff(pat_bar,fu40nte_bar)
+setdiff(pat_bar,nte_bar)
+```
 #---------------------------
 ## setdiff() result
 #---------------------------------------------------------------------------
