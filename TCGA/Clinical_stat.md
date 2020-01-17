@@ -313,6 +313,15 @@ omf_v4.0_brca
 patient_brca
 radiation_brca
 ```
+## Make dataframe
+### barcode |bcr_patient_barcode,er_status_by_ihc,nte_er_status,pr_status_by_ihc,nte_pr_status_by_ihc,her2_status_by_ihc,nte_her2_status
+``` r
+bar_sub_patient_brca=patient_brca[,c("bcr_patient_barcode","er_status_by_ihc","nte_er_status","pr_status_by_ihc","nte_pr_status_by_ihc","her2_status_by_ihc","nte_her2_status")]
+
+write.csv(bar_sub_patient_brca, "/media/cytogenbi2/6eaf3ba8-a866-4e8a-97ef-23c61f7da612/BreastCancer/data/etc/GDC_Harmonized/clinical_data/stat/bar_sub_patient_brca.csv")
+
+```
+
 #---------------------------
 ```
 setdiff(fu15_bar,fu21_bar)
