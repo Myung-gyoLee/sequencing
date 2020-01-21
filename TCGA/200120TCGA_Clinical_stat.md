@@ -53,6 +53,15 @@ with open("/media/cytogenbi2/8e7f6c8b-bc45-4c58-816f-a062fd95b91a/clinical/cart/
 
 inf.close()
 
+
+with open("/media/cytogenbi2/8e7f6c8b-bc45-4c58-816f-a062fd95b91a/clinical/clinical.tsv") as inf1:
+    clin_head=inf1.readline().strip().split("\t")
+    print(clin_head)
+
+inf1.close()
+
+
+
 # intersection of col_uniq , cart_head
 
 inter_cart=list(set(col_uniq).intersection(set(cart_head)))
@@ -74,7 +83,24 @@ f.close()
 >>> len(inter_cart)
 14
 
+## intersection of clin_head , cart_head
+```python
+inter_clin=list(set(clin_head).intersection(set(cart_head)))
+inter_clin
+len(inter_clin)
 
+
+with open("/media/cytogenbi2/8e7f6c8b-bc45-4c58-816f-a062fd95b91a/clinical/column_clin_brca.txt","w") as f:
+    print("\n".join(clin_head), file = f)
+
+f.close()
+
+
+```
+
+>>> len(inter_clin) 147
+>>> len(clin_head) 161
+>>> len(cart_head) 161
 
 ## TCGA clinical data load
 ### > length(colnames(clind)) [1] 161
@@ -111,7 +137,12 @@ substr(strsp, 1,12)
 
 > intersect(substr(strsp, 1,12),submitter_id)
 
-> length(intersect(substr(strsp, 1,12),submitter_id))
+
+> length(arch_tcga$ID) # ARCHs4 metadata
+[1] 10406
+
+> length(intersect(substr(strsp, 1,12),submitter_id)) # intersection of ARCHs4 and TCGA clinical cart
+
 [1] 10169
 
 ```
@@ -119,8 +150,21 @@ substr(strsp, 1,12)
 
 
 ## intersect
-```r
+```bash
 
+cut -f2 /media/cytogenbi2/8e7f6c8b-bc45-4c58-816f-a062fd95b91a/clinical/clinical.tsv |sort|uniq>brca_gdc_bar.txt
+
+cut -f2  /media/cytogenbi2/8e7f6c8b-bc45-4c58-816f-a062fd95b91a/clinical/02cancer33_txt/nationwidechildrens.org_clinical_patient_brca.txt|sort|uniq>brca_nat_bar.txt
+
+#-------------------------------------------------------------------------------#
+
+(base) cytogenbi2@cytogenbi2-B365M-DS3H:/media/cytogenbi2/8e7f6c8b-bc45-4c58-816f-a062fd95b91a/clinical$ diff brca_nat_bar.txt brca_gdc_bar.txt
+1d0
+< CDE_ID:2003301
+1099c1098
+< bcr_patient_barcode
+---
+> submitter_id
 
 
 
