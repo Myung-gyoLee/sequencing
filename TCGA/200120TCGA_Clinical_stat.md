@@ -90,6 +90,12 @@ inter_clin
 len(inter_clin)
 
 
+with open("/media/cytogenbi2/8e7f6c8b-bc45-4c58-816f-a062fd95b91a/clinical/column_inter_brca.txt","w") as f:
+    print("\n".join(inter_clin), file = f)
+
+f.close()
+
+
 with open("/media/cytogenbi2/8e7f6c8b-bc45-4c58-816f-a062fd95b91a/clinical/column_clin_brca.txt","w") as f:
     print("\n".join(clin_head), file = f)
 
@@ -171,11 +177,40 @@ cut -f2  /media/cytogenbi2/8e7f6c8b-bc45-4c58-816f-a062fd95b91a/clinical/02cance
 
 ```
 
-##
-```python
+## add demographic information - join 2 table
+```r
+
+col_clind=clind[,c("submitter_id","age_at_index","ethnicity","gender","race","vital_status","ajcc_clinical_m","ajcc_clinical_n","ajcc_clinical_stage","ajcc_clinical_t","ajcc_pathologic_m","ajcc_pathologic_n","ajcc_pathologic_stage","ajcc_pathologic_t","ajcc_staging_system_edition","tumor_stage")]
 
 
+substr(strsp, 1,12)
 
+arch_tcga1=arch_tcga
+arch_tcga["submitter_id"]= substr(strsp, 1,12)
+
+arch_join = left_join(arch_tcga, col_clind, by=c("submitter_id"="submitter_id"))
+
+> grep("-02B", strsp, value = TRUE)
+[1] "TCGA-14-1034-02B" "TCGA-FG-5965-02B" "TCGA-TQ-A7RK-02B" "TCGA-DU-6407-02B"
+[5] "TCGA-DU-6404-02B" "TCGA-DD-AACA-02B"
+
+grep("TCGA-14-1034", strsp, value = TRUE)
+grep("TCGA-FG-5965", strsp, value = TRUE)
+grep("TCGA-TQ-A7RK", strsp, value = TRUE)
+grep("TCGA-DU-6407", strsp, value = TRUE)
+grep("TCGA-DU-6404", strsp, value = TRUE)
+grep("TCGA-DD-AACA", strsp, value = TRUE)
+
+
+A02=grep("-02A", strsp, value = TRUE)
+
+for (i in A02){
+    ii=substr(strsp, 1,12)
+    pline=grep(ii, strsp, value = TRUE)
+    print(pline)
+}
+
+write.table(arch_join, "/media/cytogenbi2/8e7f6c8b-bc45-4c58-816f-a062fd95b91a/clinical/200122_tcga_sample_info_demographic_add.tsv", row.names = FALSE, quote=FALSE, sep = "\t")
 ```
 
 
