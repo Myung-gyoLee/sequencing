@@ -190,7 +190,6 @@ src_tbls(db1)
 library(dplyr)
 library(psych)
 
-unique($
 
 unique(follow_up_v1.5_brca$bcr_patient_uuid)
 fu15_bar = unique(follow_up_v1.5_brca$bcr_patient_barcode)

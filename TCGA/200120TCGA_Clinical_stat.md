@@ -270,24 +270,55 @@ setdiff(sub_brca$bcr_patient_barcode,arch_brca$submitter_id)
 length(unique(arch_brca$submitter_id))
 length(unique(sub_brca$bcr_patient_barcode))
 
+
+```
+
+## deal with not in patient_brca
+```r
+txtdir="/media/cytogenbi2/6eaf3ba8-a866-4e8a-97ef-23c61f7da612/BreastCancer/data/etc/GDC_Harmonized/clinical_data/txt/"
+
+setwd(txtdir)
+follow_up_v2.1_brca=read.table("nationwidechildrens.org_clinical_follow_up_v2.1_brca.txt", header = TRUE, sep = "\t")
+
+follow_up_v4.0_brca=read.table("nationwidechildrens.org_clinical_follow_up_v4.0_brca.txt", header = TRUE, sep = "\t")
+
+
+attach(follow_up_v2.1_brca)
+
+fu21_bar = bcr_patient_barcode
+fu21_fubar = bcr_followup_barcode
+
+detach(follow_up_v2.1_brca)
+
+attach(follow_up_v4.0_brca)
+
+fu40_bar = bcr_patient_barcode
+fu40_fubar = bcr_followup_barcode
+
+detach(follow_up_v4.0_brca)
+
+setdiff(diff_fu21, diff_fu40)
+
+diff_fu21=setdiff(fu21_bar,pat_bar) # fu21_bar = follow_up_v2.1_brca
+diff_fu40=setdiff(fu40_bar,pat_bar) # fu40_bar = follow_up_v4.0_brca
+diff_nte= setdiff(nte_bar,pat_bar)
+
+union1=union(diff_fu21, diff_fu40)
+
+diff_asub=setdiff(arch_brca$submitter_id, sub_brca$bcr_patient_barcode)
+setdiff(diff_asub, union1) #[1] "TCGA-C8-A12T" "TCGA-C8-A275"
+
+```
+
+
+
+## join
+```r
 # join
 sub_join = left_join(arch_tcga, sub_brca, by=c("submitter_id"="bcr_patient_barcode"))
 
 # write
 write.table(arch_join, "/media/cytogenbi2/8e7f6c8b-bc45-4c58-816f-a062fd95b91a/clinical/200123_tcga_sample_info_subtype_add.tsv", row.names = FALSE, quote=FALSE, sep = "\t")
-```
-
-##
-```python
-
-
-
-```
-
-
-
-##
-```r
 
 ```
 
