@@ -420,5 +420,38 @@ character(0)
 ```r
 library(dplyr)
 BRCAmutMod=clin_BRCA[,sapply(clin_BRCA, nlevels)>1]
+
+
 ```
 ##### colnames(clin_BRCA) #57 BRCAmutMod column colnames(BRCAmutMod)  #53
+
+## not in patient_brca
+```r
+diff_fu21=setdiff(fu21_bar,pat_bar) # fu21_bar = follow_up_v2.1_brca
+diff_fu40=setdiff(fu40_bar,pat_bar) # fu40_bar = follow_up_v4.0_brca
+diff_nte= setdiff(nte_bar,pat_bar)
+
+union1=union(diff_fu21, diff_fu40)
+
+> union(diff_fu21, diff_fu40)
+ [1] "TCGA-C8-A12L" "TCGA-C8-A12M" "TCGA-C8-A12N" "TCGA-C8-A12O" "TCGA-C8-A12P"
+ [6] "TCGA-C8-A12Q" "TCGA-C8-A12U" "TCGA-C8-A12V" "TCGA-C8-A12W" "TCGA-C8-A12X"
+[11] "TCGA-C8-A131" "TCGA-C8-A1HK" "TCGA-C8-A1HL" "TCGA-C8-A1HM" "TCGA-C8-A1HN"
+[16] "TCGA-C8-A26Z" "TCGA-C8-A273" "TCGA-C8-A274" "TCGA-C8-A12Y" "TCGA-C8-A12Z"
+[21] "TCGA-C8-A1HO" "TCGA-C8-A26V" "TCGA-C8-A26W" "TCGA-C8-A26X" "TCGA-C8-A26Y"
+> length(union(diff_fu21, diff_fu40))
+[1] 25
+> length(diff_fu21)
+[1] 18
+> length(diff_fu40)
+[1] 13
+> length(diff_nte)
+[1] 2
+
+> length(union(union1, diff_nte))
+[1] 25
+
+
+
+
+```

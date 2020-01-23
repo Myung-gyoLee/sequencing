@@ -214,11 +214,67 @@ write.table(arch_join, "/media/cytogenbi2/8e7f6c8b-bc45-4c58-816f-a062fd95b91a/c
 ```
 
 
-##
-```python
+## Join brca subtype table
+```r
+patient_brca=read.table("/media/cytogenbi2/6eaf3ba8-a866-4e8a-97ef-23c61f7da612/BreastCancer/data/etc/GDC_Harmonized/clinical_data/txt/nationwidechildrens.org_clinical_patient_brca.txt", header = TRUE, sep = "\t", fill = TRUE)
+
+sub_brca = patient_brca[,c("bcr_patient_barcode","er_status_by_ihc","nte_er_status","pr_status_by_ihc","nte_pr_status_by_ihc","her2_status_by_ihc","nte_her2_status")]
+
+# remove row 1,2
+sub_brca=sub_brca[-c(1,2),]
+grep("C50.9", sub_brca$bcr_patient_barcode)
+sub_brca=sub_brca[-c(686),]
+
+grep("C50.9", sub_brca[-c(686),]$bcr_patient_barcode)
+
+
+# intersect 2 different barcode id
+
+#> length(intersect(arch_tcga$submitter_id, sub_brca$bcr_patient_barcode))
+#[1] 1066
+#> Breast Invasive Carcinoma 1134
+
+nrow(arch_tcga[arch_tcga$Group=="Breast Invasive Carcinoma",])
+#> nrow(arch_tcga[arch_tcga$Group=="Breast Invasive Carcinoma",])    [1] 1134
+
+# extract brca
+arch_brca = arch_tcga[arch_tcga$Group=="Breast Invasive Carcinoma",]
+
+
+> length(unique(arch_brca$submitter_id))
+[1] 1093
+> length(unique(sub_brca$bcr_patient_barcode))
+[1] 1072
+
+
+intersect(arch_brca$submitter_id, sub_brca$bcr_patient_barcode)
+setdiff(arch_brca$submitter_id, sub_brca$bcr_patient_barcode)
+setdiff(sub_brca$bcr_patient_barcode,arch_brca$submitter_id)
+# > length(intersect(arch_brca$submitter_id, sub_brca$bcr_patient_barcode))
+# [1] 1066
+
+> setdiff(arch_brca$submitter_id, sub_brca$bcr_patient_barcode)
+ [1] "TCGA-C8-A12Y" "TCGA-C8-A12Z" "TCGA-C8-A12L" "TCGA-C8-A26Y" "TCGA-C8-A1HK"
+ [6] "TCGA-C8-A273" "TCGA-C8-A12X" "TCGA-C8-A12W" "TCGA-C8-A26X" "TCGA-C8-A12T"
+[11] "TCGA-C8-A12V" "TCGA-C8-A12O" "TCGA-C8-A1HN" "TCGA-C8-A26V" "TCGA-C8-A1HM"
+[16] "TCGA-C8-A12U" "TCGA-C8-A12Q" "TCGA-C8-A1HL" "TCGA-C8-A12P" "TCGA-C8-A1HO"
+[21] "TCGA-C8-A12N" "TCGA-C8-A131" "TCGA-C8-A275" "TCGA-C8-A274" "TCGA-C8-A26Z"
+[26] "TCGA-C8-A12M" "TCGA-C8-A26W"
+
+> setdiff(sub_brca$bcr_patient_barcode,arch_brca$submitter_id)
+[1] "TCGA-A7-A0DC"     "TCGA-AC-A5EI"     "TCGA-AR-A0U1"     "[Not Applicable]"
+[5]  "TCGA-C8-A9FZ"
 
 
 
+length(unique(arch_brca$submitter_id))
+length(unique(sub_brca$bcr_patient_barcode))
+
+# join
+sub_join = left_join(arch_tcga, sub_brca, by=c("submitter_id"="bcr_patient_barcode"))
+
+# write
+write.table(arch_join, "/media/cytogenbi2/8e7f6c8b-bc45-4c58-816f-a062fd95b91a/clinical/200123_tcga_sample_info_subtype_add.tsv", row.names = FALSE, quote=FALSE, sep = "\t")
 ```
 
 ##
