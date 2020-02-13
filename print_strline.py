@@ -31,7 +31,11 @@ else :
 			if i == 1:
 				ldic[fline[0].split("\t")[j].strip()]=fline[i].split("\t")[j].strip()
 			else :
-				ldic[fline[0].split("\t")[j].strip()]+="|%s"%fline[i].split("\t")[j].strip()
+				try:
+					ldic[llist[0].split("\t")[j].strip()]+="|%s"%llist[i].split("\t")[j].strip()
+				except IndexError:
+					print('::::','IndexError:line number = ',i,'::::')
+					continue
 
 print("Matched line number = %s"%(len(llist)))
 
