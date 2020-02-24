@@ -1,5 +1,5 @@
 setwd("H:TCGA")
-load("matrixARCHs4.Rdata")
+#load("matrixARCHs4.Rdata")
 
 #------------------------------------------------------------------#
 ## 200214_02_de_input_matrix.r ##
@@ -21,17 +21,26 @@ load("matrixARCHs4.Rdata")
 library(DESeq2)
 
 # reread Expression Data and Meta data
-BRCA_TN1=read.csv("./02Breast/021merge/ExBRCA_Tumor_normal.csv", header = T, row.names = 1)
-metaTtum_nor1=read.csv("./02Breast/021merge/metaBRCA_Tumor_normal.csv", header = T, row.names = 1)
+BRCA_TN1=read.csv("./02Breast/021merge/ExBRCA_Tumor_GTExnormal.csv", header = T, row.names = 1)
+metaTtum_nor1=read.csv("./02Breast/021merge/metaBRCATum_GTExnormal.csv", header = T, row.names = 1)
 
 dds = DESeqDataSetFromMatrix(countData = BRCA_TN1,
                              colData = metaTtum_nor1[,c(2,3,5)],
                              design = ~ Condition)
 
 dds
+
+#> head(colnames(BRCA_TN1))
+#[1] "Row.names"            "TCGA.E2.A1IU.01A.11R" "TCGA.A1.A0SB.01A.11R"
+#[4] "TCGA.A2.A04W.01A.31R" "TCGA.AN.A0AM.01A.11R" "TCGA.LL.A440.01A.11R"
+
+ngene <- BRCA_TN1[1]
+BRCA_TN1 <- BRCA_TN1[,c(2:ncol(BRCA_TN1))]
+rownames(BRCA_TN1) <- ngene$Row.names
+head(metaTtum_nor1)
 #View(metaTtum_nor1)
 #rownames(metaTtum_nor) = seq(1:length(rownames(metaTtum_nor)))
 #rownames(BRCA_TN) = seq(1:length(rownames(BRCA_TN)))
 
 #------------------------------------------------------------------#
-save(list=ls(), file='./02Breast/021merge/ddsBreast.Rdata')
+save(dds, file='./02Breast/021merge/Breast2dds_GTExnormal.Rdata')

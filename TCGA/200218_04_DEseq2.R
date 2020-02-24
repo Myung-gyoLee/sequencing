@@ -3,7 +3,7 @@ setwd("H:TCGA")
 library(DESeq2)
 
 
-load('./02Breast/021merge/ddsBreast.Rdata')
+load('./02Breast/021merge/Breast2dds_GTExnormal.Rdata')
 
 View(counts(dds))
 #------------------------------------------------------------------#
@@ -19,6 +19,10 @@ sizeFactors(dds)
 
 normalized_counts <- counts(dds, normalized=TRUE)
 
+### create plotdir
+dir.create("./02Breast/023report/2.GTExNormal")
+plotdir = "./02Breast/023report/2.GTExNormal"
+
 #dir.create("./02Breast/022normalized_counts")
 #write.table(normalized_counts, file="./02Breast/022normalized_counts/200218normalized_counts.txt", sep="\t", quote=F, col.names=NA)
 #------------------------------------------------------------------#
@@ -33,17 +37,20 @@ normalized_counts <- counts(dds, normalized=TRUE)
 #rld = rlogTransformation(dds)
 #rld = vst(dds)
 
-### Plot PCA 
-file1=sprintf("./02Breast/022normalized_counts/plotPCA_BRCATN_%s.png", Sys.Date())
-png(filename = file1, height=400, width=400, bg="white")
-plotPCA(rld, intgroup="Condition")
-dev.off()
 
 # Input is a matrix of log transformed values
 #rld <- rlog(dds, blind=T)
 rld <- vst(dds)
-rld_mat <- assay(rld)
+### Extract the rlog matrix from the object
+rld_mat <- assay(rld)    ## assay() is function from the "SummarizedExperiment" package that was loaded when you loaded DESeq2
 pca <- prcomp(t(rld_mat))
+
+### Plot PCA 
+file1=sprintf("%s/plotPCA_BRCATN_%s.png", plotdir,Sys.Date())
+png(filename = file1, height=400, width=400, bg="white")
+plotPCA(rld, intgroup="Condition")
+dev.off()
+
 
 # Create data frame with metadata and PC3 and PC4 values for input to ggplot
 df <- cbind(meta, pca$x)
@@ -52,8 +59,6 @@ ggplot(df) + geom_point(aes(x=PC3, y=PC4, color = Condition))
 
 ## Hierarchical Clustering
 
-### Extract the rlog matrix from the object
-rld_mat <- assay(rld)    ## assay() is function from the "SummarizedExperiment" package that was loaded when you loaded DESeq2
 
 ### Compute pairwise correlation values
 rld_cor <- cor(rld_mat)    ## cor() is a base R function
@@ -62,6 +67,8 @@ View(rld_cor)   ## check the output of cor(), make note of the rownames and coln
 
 
 ### Plot heatmap
+library(pheatmap)
+library(RColorBrewer)
 pheatmap(rld_cor)
 
 heat.colors <- brewer.pal(6, "Blues")
@@ -69,7 +76,7 @@ pheatmap(rld_cor, color = heat.colors, border_color=NA, fontsize = 10,
          fontsize_row = 10, height=20)
 
 #------------------------------------------------------------------#
-# 04. DESe2 analysis
+# 04. DESeq2 analysis
 
 #https://github.com/hbctraining/DGE_workshop/blob/master/lessons/04_DGE_DESeq2_analysis.md
 ## Step 1: Estimate size factors
@@ -87,7 +94,7 @@ colSums(counts(dds, normalized=T))
 
 ## Plot dispersion estimates
 dds <- estimateDispersions(dds)
-file2=sprintf("./02Breast/022normalized_counts/plotDisp_BRCATN_%s.png", Sys.Date())
+file2=sprintf("%s/plotDisp_BRCATN_%s.png", plotdir, Sys.Date())
 png(filename = file2, height=400, width=400, bg="white")
 plotDispEsts(dds)
 dev.off()
@@ -105,7 +112,7 @@ dev.off()
 library(BiocParallel)
 register(SnowParam(4))
 
-dds = DESeq(dds, parallel = 4)
+dds = DESeq(dds)
 # dds = DESeq(dds)
 
 contrast_oe <- c("Condition", "Tumor", "Normal")
@@ -117,20 +124,20 @@ res_tableOE <- lfcShrink(dds, contrast=contrast_oe, res=res_tableOE_unshrunken)
 
 # MA plot
 # unshrunken
-file3=sprintf("./02Breast/022normalized_counts/plotMA_unshr_BRCATN_%s.png", Sys.Date())
+file3=sprintf("%s/plotMA_unshr_BRCATN_%s.png", plotdir, Sys.Date())
 png(filename = file3, height=400, width=400, bg="white")
 plotMA(res_tableOE_unshrunken, ylim=c(-2,2))
 dev.off()
 
 # shrunken
-file4=sprintf("./02Breast/022normalized_counts/plotMA_Shr_BRCATN_%s.png", Sys.Date())
+file4=sprintf("%s/plotMA_Shr_BRCATN_%s.png", plotdir, Sys.Date())
 png(filename = file4, height=400, width=400, bg="white")
 plotMA(res_tableOE, ylim=c(-2,2))
 dev.off()
 
 # Summarizing results
 summary(res_tableOE)
-file5=sprintf("./02Breast/022normalized_counts/Summary_DE_%s.txt", Sys.Date())
+file5=sprintf("%s/Summary_DE_%s.txt", plotdir, Sys.Date())
 capture.output(summary(res_tableOE), 
                file = file5,
                append = TRUE)
@@ -141,7 +148,8 @@ capture.output(summary(res_tableOE),
 
 ### Set thresholds
 # The lfc.cutoff is set to 0.58; remember that we are working with log2 fold changes so this translates to an actual fold change of 1.5 which is pretty reasonable.
-
+library(dplyr)
+library(tidyverse)
 mcols(res_tableOE)
 
 res_tableOE %>% data.frame() %>% View()
@@ -161,8 +169,9 @@ sigOE <- res_tableOE_tb %>%
 
 sigOE
 #results(dds, contrast = contrast_oe, alpha = 0.05, lfcThreshold = 0.58)
+fileOE=sprintf("%s/SigOE%s.csv", plotdir, Sys.Date())
+write.csv(sigOE, file = fileOE)
 
-save(list=ls(), file='./02Breast/021merge/DEBreast.Rdata')
 #------------------------------------------------------------------#
 ## 06. Visualizing Results
 # https://github.com/hbctraining/DGE_workshop/blob/master/lessons/06_DGE_visualizing_results.md
@@ -174,6 +183,8 @@ library(RColorBrewer)
 library(DESeq2)
 library(pheatmap)
 
+
+######################### have to rewrite ###########################
 DEGreport::degPlot(dds = dds, res = res_tableOE_tb, n = 20, xs = "type", group = "condition") # dds object is output from DESeq2
 
 DEGreport::degVolcano(
