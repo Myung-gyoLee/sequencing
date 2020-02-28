@@ -15,7 +15,7 @@ def cap_ccle(in_gene,cluster):
 	## double-click address
 	pyautogui.click(clicks = 2, x=449, y=108)
 	## 주소 입력 
-	ad_ccle="https://portals.broadinstitute.org/ccle/page?gene=%s"%(in_gene)
+	ad_ccle="page?gene=%s"%(in_gene)
 	pyautogui.typewrite(ad_ccle, interval=0.1)
 	pyautogui.press("enter")
 	time.sleep(5)
@@ -29,7 +29,7 @@ def cap_ccle(in_gene,cluster):
 	pyautogui.press('up')
 	time.sleep(5)
 	## screenshot
-	im1=pyautogui.screenshot('/home/cytogenbi2/SingleCell/CCLE/%s_%s.png'%(in_gene,cluster))
+	im1=pyautogui.screenshot('/home/cytogenbi2/SingleCell/%s_%s.png'%(in_gene,cluster))
 	time.sleep(5)
 	## click anywhere
 	pyautogui.click(x=126, y=637)
@@ -61,7 +61,7 @@ from PIL import Image
 import glob
 import os
 
-inf = glob.glob("/home/cytogenbi2/SingleCell/ccle/*.png")
+inf = glob.glob("/home/cytogenbi2/SingleCell//*.png")
 for infile in inf:
 	img = Image.open(infile)
 	area = (321,449,1728,1061)
@@ -105,7 +105,7 @@ def cap_gepia(in_gene,cluster):
 	pyautogui.click(x=449, y=108)
 	pyautogui.click(clicks = 2, x=449, y=108)
 	## double-click address
-	ad_gepia="http://gepia.cancer-pku.cn/"
+	ad_gepia="http://"
 	pyautogui.typewrite(ad_gepia, interval=0.25)
 	pyautogui.press("enter")
 	## press pop-up "close"
