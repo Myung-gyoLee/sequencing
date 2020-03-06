@@ -48,7 +48,7 @@ getwd()
 #dir.create("cluster14")
 setwd("../")
 #++++++++++++++++++++++++++#
-setwd("./Funcion2/cluster5")
+setwd("./Funcion2/cluster4")
 #++++++++++++++++++++++++++#
 getwd()
 
@@ -59,7 +59,7 @@ rm(gene)
 #### Set cluster dataframe ####
 #### cl4 ; cl5 ; cl8 ; cl14 
 #++++++++++++++++++++++++++#
-df <- cl5
+df <- cl4
 
 #++++++++++++++++++++++++++#
 geneList <- df[,3]
@@ -79,26 +79,24 @@ length(bkgd.genes)
 
 bkgd.genes.entrez <- bitr(bkgd.genes,fromType = "SYMBOL",toType = "ENTREZID",OrgDb = org.Hs.eg.db)
 
-#up.genes <- cldf[cldf$avg_logFC > 1 & cldf$p_val_adj < 0.05, 1] 
-up.genes <- cldf[cldf$avg_logFC > 0.58 & cldf$p_val_adj < 0.05, 1] 
-length(up.genes)
-
-#dn.genes <- cldf[cldf$avg_logFC < -1 & cldf$p_val_adj < 0.05, 1]
-dn.genes <- cldf[cldf$avg_logFC < -0.58 & cldf$p_val_adj < 0.05, 1]
-length(dn.genes)
-
-bkgd.genes <- cldf[,1]
-length(bkgd.genes)
-
-
-
-
-up.genes.entrez <- clusterProfiler::bitr(up.genes,fromType = "SYMBOL",toType = "ENTREZID",OrgDb = org.Hs.eg.db)
-dn.genes.entrez <- bitr(dn.genes,fromType = "SYMBOL",toType = "ENTREZID",OrgDb = org.Hs.eg.db)
-bkgd.genes.entrez <- bitr(bkgd.genes,fromType = "SYMBOL",toType = "ENTREZID",OrgDb = org.Hs.eg.db)
-
-head(up.genes.entrez)
-
+##++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++##
+##up.genes <- cldf[cldf$avg_logFC > 1 & cldf$p_val_adj < 0.05, 1] 
+#up.genes <- cldf[cldf$avg_logFC > 0.58 & cldf$p_val_adj < 0.05, 1] 
+#length(up.genes)
+#
+##dn.genes <- cldf[cldf$avg_logFC < -1 & cldf$p_val_adj < 0.05, 1]
+#dn.genes <- cldf[cldf$avg_logFC < -0.58 & cldf$p_val_adj < 0.05, 1]
+#length(dn.genes)
+#
+#bkgd.genes <- cldf[,1]
+#length(bkgd.genes)
+#
+#up.genes.entrez <- clusterProfiler::bitr(up.genes,fromType = "SYMBOL",toType = "ENTREZID",OrgDb = org.Hs.eg.db)
+#dn.genes.entrez <- bitr(dn.genes,fromType = "SYMBOL",toType = "ENTREZID",OrgDb = org.Hs.eg.db)
+#bkgd.genes.entrez <- bitr(bkgd.genes,fromType = "SYMBOL",toType = "ENTREZID",OrgDb = org.Hs.eg.db)
+#
+#head(up.genes.entrez)
+##++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++##
 
 ### Entrez ID mapping 
 library(org.Hs.eg.db)
@@ -132,6 +130,11 @@ ego3 <- enrichGO(gene         = names(geneList),
 head(ego3)
 #write.csv(ego3@result,file = "enrichGO.csv")
 
+filegp=sprintf("goplot%s.png",  Sys.Date())
+png(filename = filegp, height=550, width=550, bg="white")
+goplot(ego3)
+dev.off()
+
 gsego <-gseGO(geneList     = res_entrez,
               OrgDb        = org.Hs.eg.db,
               ont          = "CC",
@@ -148,10 +151,30 @@ gsego <-gseGO(geneList     = res_entrez,
 #### C6 oncogenic :emC6, gsC6   C7 immune : emC7, gsC7
 library(msigdbr)
 dir.create("../MSigDb")
-setwd("./MSigDb/")
+setwd("../MSigDb/")
 msigdbr_show_species()
 m_df <- msigdbr(species = "Homo sapiens")
 head(m_df, 2) %>% as.data.frame
+
+
+#### C2: curated gene sets
+
+m_t2g <- msigdbr(species = "Homo sapiens", category = "C2") %>% 
+  dplyr::select(gs_name, gene_symbol)
+head(m_t2g)
+
+emC2 <- enricher(gene, 
+                 #universe = as.character(bkgd.genes), 
+                 TERM2GENE = m_t2g, )
+head(emC2)
+
+gsC2 <- GSEA(geneList, TERM2GENE = m_t2g)
+head(gsC2)
+
+#write.csv(emC5@result,file = "enrich_msigGO_result.csv")
+#write.csv(gsC5@result,file = "GSEA_msigGO_result.csv")
+
+
 
 
 #### C5: GO gene sets
@@ -211,9 +234,9 @@ head(gsC7)
 
 library(magrittr)
 library(clusterProfiler)
-BiocManager::install("clusterProfiler")
 
-
+dir.create("./wiki")
+setwd("./wiki/")
 
 wp.hs.gmt <- rWikiPathways::downloadPathwayArchive(organism="Homo sapiens", format = "gmt")
 
@@ -226,8 +249,8 @@ wpid2name
 
 
 ewp.up <- clusterProfiler::enricher(
-  up.genes.entrez[[2]],
-  universe = bkgd.genes.entrez[[2]],
+  res_entrez,
+  #universe = bkgd.genes.entrez[[2]],
   pAdjustMethod = "fdr",
   pvalueCutoff = 0.1, #p.adjust cutoff; relaxed for demo purposes
   TERM2GENE = wpid2gene,
@@ -238,55 +261,86 @@ head(ewp.up)
 ewp.up <- DOSE::setReadable(ewp.up, org.Hs.eg.db, keytype = "ENTREZID")
 head(ewp.up)
 
-ewp.dn <- enricher(
-  dn.genes.entrez[[2]],
-  #universe = bkgd.genes[[2]],  #hint: comment out to get any results for demo
-  pAdjustMethod = "fdr",
-  pvalueCutoff = 0.1, #p.adjust cutoff; relaxed for demo purposes
-  TERM2GENE = wpid2gene,
-  TERM2NAME = wpid2name)
+# ewp.dn <- enricher(
+#   dn.genes.entrez[[2]],
+#   #universe = bkgd.genes[[2]],  #hint: comment out to get any results for demo
+#   pAdjustMethod = "fdr",
+#   pvalueCutoff = 0.1, #p.adjust cutoff; relaxed for demo purposes
+#   TERM2GENE = wpid2gene,
+#   TERM2NAME = wpid2name)
 
-ewp.dn <- setReadable(ewp.dn, org.Hs.eg.db, keytype = "ENTREZID")
-head(ewp.dn)
-dotplot(ewp.dn, showCategory = 20)
+# ewp.dn <- setReadable(ewp.dn, org.Hs.eg.db, keytype = "ENTREZID")
+# head(ewp.dn)
+# dotplot(ewp.dn, showCategory = 20)
+# 
+# 
+# ### GSEA WikiPathways Analysis
+# lung.expr$fcsign <- sign(lung.expr$log2FC)
+# lung.expr$logfdr <- -log10(lung.expr$P.Value)
+# lung.expr$sig <- lung.expr$logfdr/lung.expr$fcsign
+# sig.lung.expr.entrez<-merge(lung.expr, bkgd.genes.entrez, by.x = "GeneID", by.y = "ENSEMBL")
+# gsea.sig.lung.expr <- sig.lung.expr.entrez[,8]
+# names(gsea.sig.lung.expr) <- as.character(sig.lung.expr.entrez[,9])
+# gsea.sig.lung.expr <- sort(gsea.sig.lung.expr,decreasing = TRUE)
+# 
+# gwp.sig.lung.expr <- clusterProfiler::GSEA(
+#   gsea.sig.lung.expr,
+#   pAdjustMethod = "fdr",
+#   pvalueCutoff = 0.05, #p.adjust cutoff
+#   TERM2GENE = wpid2gene,
+#   TERM2NAME = wpid2name)
+# 
+# gwp.sig.lung.expr.df = data.frame(ID=gwp.sig.lung.expr$ID,
+#                                   Description=gwp.sig.lung.expr$Description,
+#                                   enrichmentScore=gwp.sig.lung.expr$enrichmentScore,
+#                                   NES=gwp.sig.lung.expr$NES,
+#                                   pvalue=gwp.sig.lung.expr$pvalue,
+#                                   p.adjust=gwp.sig.lung.expr$p.adjust,
+#                                   rank=gwp.sig.lung.expr$rank,
+#                                   leading_edge=gwp.sig.lung.expr$leading_edge
+# )
+# gwp.sig.lung.expr.df[which(gwp.sig.lung.expr.df$NES > 1),] #pathways enriched for upregulated lung cancer genes
+# gwp.sig.lung.expr.df[which(gwp.sig.lung.expr.df$NES < -1),] #pathways enriched for downregulated lung cancer genes
 
 
-### GSEA WikiPathways Analysis
-lung.expr$fcsign <- sign(lung.expr$log2FC)
-lung.expr$logfdr <- -log10(lung.expr$P.Value)
-lung.expr$sig <- lung.expr$logfdr/lung.expr$fcsign
-sig.lung.expr.entrez<-merge(lung.expr, bkgd.genes.entrez, by.x = "GeneID", by.y = "ENSEMBL")
-gsea.sig.lung.expr <- sig.lung.expr.entrez[,8]
-names(gsea.sig.lung.expr) <- as.character(sig.lung.expr.entrez[,9])
-gsea.sig.lung.expr <- sort(gsea.sig.lung.expr,decreasing = TRUE)
+##----------------------------------------------------------------------------------##
+### enrichKEGG
+kk1 <- enrichKEGG(gene     = res_entrez,
+                  organism     = 'hsa',
+                  pvalueCutoff = 0.05)
+head(kk1)
 
-gwp.sig.lung.expr <- clusterProfiler::GSEA(
-  gsea.sig.lung.expr,
-  pAdjustMethod = "fdr",
-  pvalueCutoff = 0.05, #p.adjust cutoff
-  TERM2GENE = wpid2gene,
-  TERM2NAME = wpid2name)
-
-gwp.sig.lung.expr.df = data.frame(ID=gwp.sig.lung.expr$ID,
-                                  Description=gwp.sig.lung.expr$Description,
-                                  enrichmentScore=gwp.sig.lung.expr$enrichmentScore,
-                                  NES=gwp.sig.lung.expr$NES,
-                                  pvalue=gwp.sig.lung.expr$pvalue,
-                                  p.adjust=gwp.sig.lung.expr$p.adjust,
-                                  rank=gwp.sig.lung.expr$rank,
-                                  leading_edge=gwp.sig.lung.expr$leading_edge
-)
-gwp.sig.lung.expr.df[which(gwp.sig.lung.expr.df$NES > 1),] #pathways enriched for upregulated lung cancer genes
-gwp.sig.lung.expr.df[which(gwp.sig.lung.expr.df$NES < -1),] #pathways enriched for downregulated lung cancer genes
+kk2 <- gseKEGG(geneList     = geneList,
+               organism     = 'hsa',
+               nPerm        = 1000,
+               minGSSize    = 120,
+               pvalueCutoff = 0.05,
+               verbose      = FALSE)
+head(kk2)
 
 
+library("pathview")
+hsa04612 <- pathview(gene.data  = kk1@result$geneID,
+                     pathway.id = "hsa04926",
+                     species    = "hsa",
+                     limit      = list(gene=max(abs(geneList)), cpd=1))
+
+#hsa05323 https://www.genome.jp/kegg-bin/show_pathway?hsa05323 안될경우 직접 xml 다운로드 
+##----------------------------------------------------------------------------------##
+# ### MeSH Enrichment Analysis
+# library(meshes)
+# 
+# emesh <- enrichMeSH(gene, MeSHDb = "MeSH.Hsa.eg.db", database='gene2pubmed', category = 'C')
+# head(emesh)
+# 
+# y <- gseMeSH(geneList, MeSHDb = "MeSH.Hsa.eg.db", database = 'gene2pubmed', category = "G")
 ##----------------------------------------------------------------------------------##
 ### enrichDO Analysis
 #### edo1
 
 
 library(DOSE)
-rm(x)
+
 edo1 <- enrichDO(gene = res_entrez,
               ont = "DO",
               #universe = bkgd.genes.entrez[[2]],
@@ -299,8 +353,8 @@ edo1 <- enrichDO(gene = res_entrez,
 
 head(edo1)
 
-dir.create("./enrichDO")
-setwd("./enrichDO/")
+dir.create("../enrichDO")
+setwd("../enrichDO/")
 getwd()
 
 #write.csv(edo1@result,file = "enrichDOresult.csv")
@@ -335,24 +389,12 @@ gsdgn <- gseDGN(res_entrez,
               minGSSize     = 120,
               pvalueCutoff  = 0.2,
               pAdjustMethod = "BH",
-              verbose       = FALSE)s
+              verbose       = FALSE)
 #gsdgn <- setReadable(gsdgn, 'org.Hs.eg.db')
 head(gsdgn, 3)
 
-##----------------------------------------------------------------------------------##
-### enrichKEGG
-kk1 <- enrichKEGG(gene     = res_entrez,
-                  organism     = 'hsa',
-                  pvalueCutoff = 0.05)
-head(kk1)
 
 
-##----------------------------------------------------------------------------------##
-### MeSH Enrichment Analysis
-library(meshes)
-
-emesh <- enrichMeSH(gene, MeSHDb = "MeSH.Hsa.eg.db", database='gendoo', category = 'C')
-head(emesh)
 
 ##----------------------------------------------------------------------------------##
 ### Cell Marker
