@@ -79,9 +79,9 @@ create_plot(analysis_type, analysis1, plot_name, 500, 500)
 ##----------------------------------------------------------------------------------##
 ## function
 ##----------------------------------------------------------------------------------##
-
+## if cluster condition 필요 없으면 df <- d 
 gsymbol_input <- function(d,cluster_num){
-  df <- d[d$cluster == cluster_num,]
+  df <- d[d$cluster == cluster_num,] # df <- d
   cat("print head of data frame")
   cat("--------------------------------------------")
   head(df)
