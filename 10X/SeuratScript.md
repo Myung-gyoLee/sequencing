@@ -44,6 +44,15 @@ png(filename="QC_scatter_SMC009.png",width = 800, height=600)
 CombinePlots(plots=list(plot1, plot2))
 dev.off()
 ```
+### subset
+```r
+#SMC009 <- subset(SMC009, subset = nFeature_RNA > 200 & nFeature_RNA < 2500 & percent.mt <5)
+SMC009 <- subset(SMC009, subset = nFeature_RNA > 200 & nFeature_RNA < 7000 & percent.mt <30)
+```
+### Normalizing the data
+```r
+SMC009 <- NormalizeData(SMC009, normalization.method = "LogNormalize", scale.factor = 10000)
+```
 
 ## run sctransform
 ```r
