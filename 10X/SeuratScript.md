@@ -81,6 +81,23 @@ save(SMC009, file = "CMC009_01_10X_Seurat_SCT.Rdata")
 SMC009 <- RunPCA(SMC009, verbose = FALSE)
 ```
 
+## run tsne
+```r
+SMC009 <- FindNeighbors(object = SMC009)
+SMC009 <- FindClusters(object = SMC009)
+SMC009 <- RunTSNE(object = SMC009)
+```
+## Dimplot
+```r
+DimPlot(object = SMC009, reduction = "tsne")
+```
+
+## Find all Markers
+```r
+SMC009.markers <- FindAllMarkers(SMC009, only.pos = TRUE, min.pct = 0.25, logfc.threshold = 0.25)
+SMC009.markers %>% group_by(cluster) %>% top_n(n=2, wt = avg_logFC) 
+```
+
 ## save data
 ```r
 save(SMC009, file = "CMC009_02_10X_Seurat_PCA.Rdata")
