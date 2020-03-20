@@ -95,6 +95,9 @@ DimPlot(object = SMC009, reduction = "tsne")
 ## Find all Markers
 ```r
 SMC009.markers <- FindAllMarkers(SMC009, only.pos = TRUE, min.pct = 0.25, logfc.threshold = 0.25)
+write.table("200320SMC009_expression.tsv", sep = "\t")
+write.table("200320SMC009_expression_rowF.tsv", row.names = FALSE, sep = "\t")
+
 SMC009.markers %>% group_by(cluster) %>% top_n(n=2, wt = avg_logFC) 
 ```
 
