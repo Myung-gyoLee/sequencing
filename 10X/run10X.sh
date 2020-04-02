@@ -23,6 +23,16 @@ cellranger count --id=run_count_10X_009 \
 ####Saving pipestance info to "run_count_10X_009/run_count_10X_009.mri.tgz"
 
 
-cellranger aggr --id=SMC024 \
-                --csv=SMC024_libraries.csv \
-				        --normalize=mapped
+# 2020-04-02
+# https://support.10xgenomics.com/single-cell-gene-expression/software/pipelines/latest/using/aggregate
+"""
+$ cd /opt/runs
+$ cellranger count --id=LV123 ...
+... wait for pipeline to finish ...
+$ cellranger count --id=LB456 ...
+... wait for pipeline to finish ...
+$ cellranger count --id=LP789 ...
+... wait for pipeline to finish ...
+"""
+
+cellranger aggr --id=SMC024 --csv=SMC024_libraries.csv --normalize=mapped
