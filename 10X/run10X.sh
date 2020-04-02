@@ -21,3 +21,8 @@ cellranger count --id=run_count_10X_009 \
 ####Pipestance completed successfully!
 ####2020-01-08 23:27:57 Shutting down.
 ####Saving pipestance info to "run_count_10X_009/run_count_10X_009.mri.tgz"
+
+
+cellranger aggr --id=SMC024 \
+                --csv=SMC024_libraries.csv \
+				        --normalize=mapped
