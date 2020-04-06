@@ -1,3 +1,13 @@
+# SMC_024_blood1
+cellranger count --id=run_count_10x_024_blood1 --fastqs=/media/cytogenbi2/8e7f6c8b-bc45-4c58-816f-a062fd95b91a/10X/HN00124804/HN00124804_10X_RawData_Outs/SMC_024_blood1/H7TVLCCX2 --sample SMC_024_blood1 --transcriptome=/home/cytogenbi2/singlecell/refdata-cellranger-GRCh38-3.0.0
+
+# SMC_024_blood2
+cellranger count --id=run_count_10x_024_blood2 --fastqs=/media/cytogenbi2/8e7f6c8b-bc45-4c58-816f-a062fd95b91a/10X/HN00124804/HN00124804_10X_RawData_Outs/SMC_024_blood2/H7TVLCCX2 --sample SMC_024_blood2 --transcriptome=/home/cytogenbi2/singlecell/refdata-cellranger-GRCh38-3.0.0
+
+
+# SMC_024_tissue
+cellranger count --id=run_count_10x_024_tissue --fastqs=/media/cytogenbi2/8e7f6c8b-bc45-4c58-816f-a062fd95b91a/10X/HN00124804/HN00124804_10X_RawData_Outs/SMC_024_tissue/H7TVLCCX2 --sample SMC_024_tissue --transcriptome=/home/cytogenbi2/singlecell/refdata-cellranger-GRCh38-3.0.0
+
 
 cellranger count --id=run_count_10X_009 \
 --fastqs=/media/cytogenbi2/8e7f6c8b-bc45-4c58-816f-a062fd95b91a/10X/HN00119076_10X/HN00119076_10X_RawData_Outs/10X_009/H72NHCCX2 \
