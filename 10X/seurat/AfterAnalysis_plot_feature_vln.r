@@ -1,10 +1,3 @@
-
-load(file = "200410dim12_b1b2t.RData")
-
-
-
-### top10 heatmap
-
 top10 <- smc024.markers %>% group_by(cluster) %>% top_n(n = 10, wt = avg_logFC)
 filet10h=sprintf("12top10_heatmap_%s_%s.png", project_name, Sys.Date())
 png(filename = filet10h, width = 1500, height = 1000)
@@ -148,26 +141,26 @@ dev.off()
 
 filecan2=sprintf("13cancer_feat1_%s_%s.png", project_name, Sys.Date())
 png(filename = filecan2, width = 1000, height = 600)
-FeaturePlot(smc024.merged, features = c("ERBB2", "BRAF", "TP53"), split.by = "orig.ident", max.cutoff = 3)
+FeaturePlot(smc024.merged, features = c("ERBB2", "BRAF", "TP53", "VEGFA"), split.by = "orig.ident", max.cutoff = 3)
 dev.off()
 
 
 filecan3=sprintf("13cancer_feat2_%s_%s.png", project_name, Sys.Date())
 png(filename = filecan3, width = 1000, height = 600)
-FeaturePlot(smc024.merged, features = c("VEGFA", "PIK3CA", "MTOR"), split.by = "orig.ident", max.cutoff = 3)
+FeaturePlot(smc024.merged, features = c("PIK3CA", "MTOR", "MAP2K1", "KIT"), split.by = "orig.ident", max.cutoff = 3)
 dev.off()
 
 
 filecan4=sprintf("13cancer_feat3_%s_%s.png", project_name, Sys.Date())
 png(filename = filecan4, width = 1000, height = 600)
-FeaturePlot(smc024.merged, features = c("KRAS", "NRAS", "HRAS"), split.by = "orig.ident", max.cutoff = 3)
+FeaturePlot(smc024.merged, features = c("KRAS", "NRAS", "HRAS", "ERBB2"), split.by = "orig.ident", max.cutoff = 3)
 dev.off()
 
 
-filecan5=sprintf("13cancer_feat4_%s_%s.png", project_name, Sys.Date())
-png(filename = filecan5, width = 1000, height = 600)
-FeaturePlot(smc024.merged, features = c("MAP2K1", "KIT", "ERBB2"), split.by = "orig.ident", max.cutoff = 3)
-dev.off()
+# filecan5=sprintf("13cancer_feat4_%s_%s.png", project_name, Sys.Date())
+# png(filename = filecan5, width = 1000, height = 600)
+# FeaturePlot(smc024.merged, features = c(), split.by = "orig.ident", max.cutoff = 3)
+# dev.off()
 
 
 #T cell : CD3D, CD3E, CD3G, IGFLR1, RGS1, TCF7, NKIRAS2, IL7R, CD8A, KLRG1, GZMB, GZMH, PRF1
@@ -178,28 +171,25 @@ dev.off()
 
 filetc2=sprintf("13tcell_feat_%s_%s.png", project_name, Sys.Date())
 png(filename = filetc2, width = 1000, height = 600)
-FeaturePlot(smc024.merged, features = c("CD3D", "CD3E", "CD3G"), split.by = "orig.ident", max.cutoff = 3)
+FeaturePlot(smc024.merged, features = c("CD3D", "CD3E", "CD3G", "CD8A"), split.by = "orig.ident", max.cutoff = 3)
 dev.off()
 
 filetc3=sprintf("13tcell_feat1_%s_%s.png", project_name, Sys.Date())
 png(filename = filetc3, width = 1000, height = 600)
-FeaturePlot(smc024.merged, features = c("IGFLR1", "RGS1", "TCF7"), split.by = "orig.ident", max.cutoff = 3)
+FeaturePlot(smc024.merged, features = c("IGFLR1", "RGS1", "TCF7", "NKIRAS2"), split.by = "orig.ident", max.cutoff = 3)
 dev.off()
 
 filetc4=sprintf("13tcell_feat2_%s_%s.png", project_name, Sys.Date())
 png(filename = filetc4, width = 1000, height = 600)
-FeaturePlot(smc024.merged, features = c("NKIRAS2", "IL7R", "CD8A"), split.by = "orig.ident", max.cutoff = 3)
+FeaturePlot(smc024.merged, features = c("IL7R", "KLRG1", "GZMB", "GZMH"), split.by = "orig.ident", max.cutoff = 3)
 dev.off()
 
 filetc5=sprintf("13tcell_feat3_%s_%s.png", project_name, Sys.Date())
-png(filename = filetc5, width = 1000, height = 600)
-FeaturePlot(smc024.merged, features = c("KLRG1", "GZMB", "GZMH"), split.by = "orig.ident", max.cutoff = 3)
+png(filename = filetc5, width = 500, height = 300)
+FeaturePlot(smc024.merged, features = c("PRF1"), split.by = "orig.ident", max.cutoff = 3)
 dev.off()
 
-filetc6=sprintf("13tcell_feat4_%s_%s.png", project_name, Sys.Date())
-png(filename = filetc6, width = 1000, height = 600)
-FeaturePlot(smc024.merged, features = c("GZMB", "GZMH", "PRF1"), split.by = "orig.ident", max.cutoff = 3)
-dev.off()
+
 
 
 #B cell : CD79A, CD63, IGHA1, IGHA2, IGHD, VPREB3
@@ -209,13 +199,13 @@ VlnPlot(smc024.merged, features=c("CD79A", "CD63", "IGHA1", "IGHA2", "IGHD", "VP
 dev.off()
 
 filebc2=sprintf("13bcell_feat1_%s_%s.png", project_name, Sys.Date())
-png(filename = filebc2, width = 1000, height = 600)
-FeaturePlot(smc024.merged, features = c("CD79A", "CD63", "VPREB3"), split.by = "orig.ident", max.cutoff = 3)
+png(filename = filebc2, width = 500, height = 600)
+FeaturePlot(smc024.merged, features = c("CD79A", "CD63"), split.by = "orig.ident", max.cutoff = 3)
 dev.off()
 
 filebc3=sprintf("13bcell_feat2_%s_%s.png", project_name, Sys.Date())
 png(filename = filebc3, width = 1000, height = 600)
-FeaturePlot(smc024.merged, features = c("IGHA1", "IGHA2", "IGHD"), split.by = "orig.ident", max.cutoff = 3)
+FeaturePlot(smc024.merged, features = c("VPREB3", "IGHA1", "IGHA2", "IGHD"), split.by = "orig.ident", max.cutoff = 3)
 dev.off()
 
 # CTC
@@ -233,7 +223,3 @@ filectca3=sprintf("13ctca3_feat2_%s_%s.png", project_name, Sys.Date())
 png(filename = filectca3, width = 400, height = 400)
 FeaturePlot(smc024.merged, features = c("CSF1R", "KRT19"), split.by = "orig.ident", max.cutoff = 3)
 dev.off()
-
-
-
-
