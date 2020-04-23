@@ -60,82 +60,82 @@ write.table(sample16, file = "sample16_mod1.tsv",sep ="\t" ,row.names = F)
 
 
 
-# rbind 2 samples
-rbind_03_04 = rbind(sample03, sample04) 
-rbind_09_10 = rbind(sample09, sample10)
-rbind_15_16 = rbind(sample15, sample16)
-
-rbind_03_04 %>% select("sampleNum") %>% table
-rbind_09_10 %>% select("sampleNum") %>% table
-rbind_15_16 %>% select("sampleNum") %>% table
-
-# > rbind_03_04 %>% select("sampleNum") %>% table 
-# Sample03 Sample04 
-# 46      199 
-# > rbind_09_10 %>% select("sampleNum") %>% table
-# Sample09 Sample10 
-# 72       89 
-# > rbind_15_16 %>% select("sampleNum") %>% table
-# Sample15 Sample16 
-# 68       85 
-
-# rbind all
-rbind_all = rbind(rbind_03_04,rbind_09_10)
-rbind_all = rbind(rbind_all, rbind_15_16)
-
-rbind_all %>% select(maf) %>% table
-rbind_all %>% select(sampleNum) %>% table
-
-#dir.create("../S04rbind")
-setwd("../S04rbind")
-write.table(rbind_all, file = "rbindall_mod1.tsv",sep ="\t" ,row.names = F)
-write.table(rbind_03_04, file = "rbind_03_04_mod1.tsv",sep ="\t" ,row.names = F)
-write.table(rbind_09_10, file = "rbind_09_10_mod1.tsv",sep ="\t" ,row.names = F)
-write.table(rbind_15_16, file = "rbind_15_16_mod1.tsv",sep ="\t" ,row.names = F)
-
-#save.image("raw_rbind200422.Rdata")
-
-# aggregate
-
-# CNV_0304 = rbind_03_04 %>% select(c(type, sampleNum, locus, location, coding)) %>%  arrange(type) %>% 
-#   filter(type=="CNV") %>% 
-#   select(c(type, locus, sampleNum)) %>% arrange(locus) 
-
-aggregate(CNV_0304$sampleNum,list(CNV_0304$type,CNV_0304$locus),FUN = paste)
-
-# locus
-attach(rbind_15_16)
-
-res_aggr_0304 = aggregate(sampleNum,list(type,gene,locus),FUN = paste) %>% arrange(Group.1)
-colnames(res_aggr_0304) = c("type","gene","locus", "sampleNum")
-#res_aggr_0304 = sapply(res_aggr_0304, FUN = paste)
-res_aggr_0304 
-
-#setwd("./locus/")
-#capture.output(cat(res_aggr_0304), "./res_aggr_0910.txt", append = TRUE)
-detach(rbind_15_16)
-#write.csv(as.data.frame(res_aggr_0304), file = "aggr_03_04_locus.tsv",row.names = F)
-
-# gene
-
-colnames(rbind_03_04)[45] = "blank"
-sel_0304 = rbind_03_04 %>% select(type, gene, sampleNum) %>% unique.data.frame()
-attach(sel_0304)
-res_aggr_0304 = aggregate(sampleNum,list(type,gene),FUN = paste) %>% arrange(Group.1)
-colnames(res_aggr_0304) = c("type","gene", "sampleNum")
-#res_aggr_0304 = sapply(res_aggr_0304, FUN = paste)
-res_aggr_0304 
-
-#setwd("./locus/")
-#capture.output(cat(res_aggr_0304), "./res_aggr_0910.txt", append = TRUE)
-detach(rbind_03_04)
-
-rbind_03_04
-rbind_09_10 
-rbind_15_16 
-
-setwd("../../")
-save.image("aggr200422.Rdata")
+# # rbind 2 samples
+# rbind_03_04 = rbind(sample03, sample04) 
+# rbind_09_10 = rbind(sample09, sample10)
+# rbind_15_16 = rbind(sample15, sample16)
+# 
+# rbind_03_04 %>% select("sampleNum") %>% table
+# rbind_09_10 %>% select("sampleNum") %>% table
+# rbind_15_16 %>% select("sampleNum") %>% table
+# 
+# # > rbind_03_04 %>% select("sampleNum") %>% table 
+# # Sample03 Sample04 
+# # 46      199 
+# # > rbind_09_10 %>% select("sampleNum") %>% table
+# # Sample09 Sample10 
+# # 72       89 
+# # > rbind_15_16 %>% select("sampleNum") %>% table
+# # Sample15 Sample16 
+# # 68       85 
+# 
+# # rbind all
+# rbind_all = rbind(rbind_03_04,rbind_09_10)
+# rbind_all = rbind(rbind_all, rbind_15_16)
+# 
+# rbind_all %>% select(maf) %>% table
+# rbind_all %>% select(sampleNum) %>% table
+# 
+# #dir.create("../S04rbind")
+# setwd("../S04rbind")
+# write.table(rbind_all, file = "rbindall_mod1.tsv",sep ="\t" ,row.names = F)
+# write.table(rbind_03_04, file = "rbind_03_04_mod1.tsv",sep ="\t" ,row.names = F)
+# write.table(rbind_09_10, file = "rbind_09_10_mod1.tsv",sep ="\t" ,row.names = F)
+# write.table(rbind_15_16, file = "rbind_15_16_mod1.tsv",sep ="\t" ,row.names = F)
+# 
+# #save.image("raw_rbind200422.Rdata")
+# 
+# # aggregate
+# 
+# # CNV_0304 = rbind_03_04 %>% select(c(type, sampleNum, locus, location, coding)) %>%  arrange(type) %>% 
+# #   filter(type=="CNV") %>% 
+# #   select(c(type, locus, sampleNum)) %>% arrange(locus) 
+# 
+# aggregate(CNV_0304$sampleNum,list(CNV_0304$type,CNV_0304$locus),FUN = paste)
+# 
+# # locus
+# attach(rbind_15_16)
+# 
+# res_aggr_0304 = aggregate(sampleNum,list(type,gene,locus),FUN = paste) %>% arrange(Group.1)
+# colnames(res_aggr_0304) = c("type","gene","locus", "sampleNum")
+# #res_aggr_0304 = sapply(res_aggr_0304, FUN = paste)
+# res_aggr_0304 
+# 
+# #setwd("./locus/")
+# #capture.output(cat(res_aggr_0304), "./res_aggr_0910.txt", append = TRUE)
+# detach(rbind_15_16)
+# #write.csv(as.data.frame(res_aggr_0304), file = "aggr_03_04_locus.tsv",row.names = F)
+# 
+# # gene
+# 
+# colnames(rbind_03_04)[45] = "blank"
+# sel_0304 = rbind_03_04 %>% select(type, gene, sampleNum) %>% unique.data.frame()
+# attach(sel_0304)
+# res_aggr_0304 = aggregate(sampleNum,list(type,gene),FUN = paste) %>% arrange(Group.1)
+# colnames(res_aggr_0304) = c("type","gene", "sampleNum")
+# #res_aggr_0304 = sapply(res_aggr_0304, FUN = paste)
+# res_aggr_0304 
+# 
+# #setwd("./locus/")
+# #capture.output(cat(res_aggr_0304), "./res_aggr_0910.txt", append = TRUE)
+# detach(rbind_03_04)
+# 
+# rbind_03_04
+# rbind_09_10 
+# rbind_15_16 
+# 
+# setwd("../../")
+# save.image("aggr200422.Rdata")
 
 # set1 <- letters[1:5]
 # set2 <- letters[4:8]
@@ -147,21 +147,6 @@ save.image("aggr200422.Rdata")
 # ## S3 method for class'venn'
 # plot(x,fills = TRUE,edges = TRUE,legend = FALSE,labels = identical(legend, FALSE),quantities = TRUE,strips = NULL,main = NULL,n = 200L,adjust_labels = TRUE,)
 
-#SNV,NOCALL
-library(eulerr)
-
-plot(euler(list(Sample03 = unique(sample03$gene), Sample04 = unique(sample04$gene))), labels = c("Sample03", "Sample04"),quantities = TRUE)
-
-sample03$type %>% table
-
-# > sample03$type %>% table
-# .
-# CNV        INDEL INDEL,NOCALL          SNV   SNV,NOCALL 
-# 26            6            1           12            1 
-
-sample03[sample03$type %in% "CNV",]$gene %>% unique
-sample03[sample03$type %in% "CNV",]$gene %>% length
-sample03[sample03$type %in% "CNV",]$gene %>% unique %>% length
 
 
 sample03
@@ -173,6 +158,7 @@ sample16
 
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++#
 #-------------------------------------------------------------------#
+### gene ####
 ######## Change variable!!########
 library(eulerr)
 project_name = "gene03vs04"
@@ -215,14 +201,15 @@ rm(sampleB)
 
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++#
 #-------------------------------------------------------------------#
+### locus ####
 ######## Change variable!!########
 library(eulerr)
-project_name = "locus15vs16"
+project_name = "locus03vs04"
 # "CNV", "INDEL", "SNV"
-typeN = "SNV"
+typeN = "CNV"
 typeNo = sprintf("%s,NOCALL" , typeN)
-sampleA = sample15
-sampleB = sample16
+sampleA = sample03
+sampleB = sample04
 #-------------------------------------------------------------------#
 sampleA$type %>% table
 sampleA[sampleA$type == typeN | sampleA$type == typeNo,]$locus %>% length
@@ -231,7 +218,12 @@ sampleA[sampleA$type == typeN | sampleA$type == typeNo,]$locus %>% unique
 v_sampleA <- sampleA[sampleA$type == typeN | sampleA$type == typeNo,]$locus 
 
 
-v_sampleA <- paste(sampleA[sampleA$type == typeN | sampleA$type == typeNo,]$gene, "~", sampleA[sampleA$type == typeN | sampleA$type == typeNo,]$locus)
+v_sampleA_gene_locus <- paste(sampleA[sampleA$type == typeN | sampleA$type == typeNo,]$gene, "~", sampleA[sampleA$type == typeN | sampleA$type == typeNo,]$locus)
+
+
+v_sampleA_locus_length <- paste(sampleA[sampleA$type == typeN | sampleA$type == typeNo,]$gene, "~", 
+                                sampleA[sampleA$type == typeN | sampleA$type == typeNo,]$locus, "~", 
+                                sampleA[sampleA$type == typeN | sampleA$type == typeNo,]$length)
 
 
 
@@ -242,15 +234,59 @@ sampleB[sampleB$type == typeN | sampleB$type == typeNo,]$locus %>% unique
 v_sampleB <- sampleB[sampleB$type == typeN | sampleB$type == typeNo,]$locus
 
 
-v_sampleB <- paste(sampleB[sampleB$type == typeN | sampleB$type == typeNo,]$gene , "~", sampleB[sampleB$type == typeN | sampleB$type == typeNo,]$locus)
+v_sampleB_gene_locus <- paste(sampleB[sampleB$type == typeN | sampleB$type == typeNo,]$gene , "~", 
+                              sampleB[sampleB$type == typeN | sampleB$type == typeNo,]$locus)
 
+v_sampleB_locus_length <-paste(sampleB[sampleB$type == typeN | sampleB$type == typeNo,]$gene , "~", 
+                               sampleB[sampleB$type == typeN | sampleB$type == typeNo,]$locus , "~", 
+                               sampleB[sampleB$type == typeN | sampleB$type == typeNo,]$length)
+
+# gene only
 setdiff(unique(v_sampleA),unique(v_sampleB)) %>% sort()
 intersect(unique(v_sampleA),unique(v_sampleB)) %>% sort()
 setdiff(unique(v_sampleB), unique(v_sampleA)) %>% sort()
 
-sd1 <- setdiff(unique(v_sampleB), unique(v_sampleA)) %>% sort()
-write.csv(as.data.frame(sd1), "sample4_locus_indel.csv")
+# gene_locus
+setdiff(unique(v_sampleA_gene_locus),unique(v_sampleB_gene_locus)) %>% sort()
+intersect(unique(v_sampleA_gene_locus),unique(v_sampleB_gene_locus)) %>% sort()
+setdiff(unique(v_sampleB_gene_locus), unique(v_sampleA_gene_locus)) %>% sort()
 
+
+
+# gene_locus_length
+setdiff(unique(v_sampleA_locus_length),unique(v_sampleB_locus_length)) %>% sort()
+intersect(unique(v_sampleA_locus_length),unique(v_sampleB_locus_length)) %>% sort()
+setdiff(unique(v_sampleB_locus_length), unique(v_sampleA_locus_length)) %>% sort()
+
+
+### write csv
+calN = "gene_locus_length"
+
+Aonly <- setdiff(unique(v_sampleA_locus_length),unique(v_sampleB_locus_length)) %>% sort()
+Aonly = data.frame(Aonly)
+Aonly["sample"] = "Aonly"
+colnames(Aonly)[1] = calN
+
+
+AinterB <- intersect(unique(v_sampleA_locus_length),unique(v_sampleB_locus_length)) %>% sort()
+AinterB = data.frame(AinterB)
+AinterB["sample"] = "AinterB"
+colnames(AinterB)[1] = calN
+
+Bonly <- setdiff(unique(v_sampleB_locus_length), unique(v_sampleA_locus_length)) %>% sort()
+Bonly = data.frame(Bonly)
+Bonly["sample"] = "Bonly"
+colnames(Bonly)[1] = calN
+
+
+venndf_gene_locus_length = rbind(Aonly, AinterB, Bonly)
+filedf=sprintf("vennlist_%s_%s_%s_%s.csv", typeN, project_name, colN, Sys.Date())
+
+# sd1 <- setdiff(unique(v_sampleB), unique(v_sampleA)) %>% sort()
+# write.csv(as.data.frame(sd1), "sample4_locus_indel.csv")
+
+
+### draw venndiagram
 titleN =  sprintf("%s %s" , typeN ,  project_name)
 filev1=sprintf("venn_%s_%s_%s.png", typeN, project_name, Sys.Date())
 png(filename = filev1, width = 300, height = 350)
