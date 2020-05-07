@@ -19,6 +19,7 @@ idlist = list(set("_".join(line.split("/")[-2].split("_")[:2]) for line in inf2)
 ouf = open("/media/cytogenbi2/8e7f6c8b-bc45-4c58-816f-a062fd95b91a/10X/00script/run10x%s_%s.sh"%(str("_".join(idlist)),str(date.today())),"w")
 
 #fastqdir = list(chain(*[glob.glob("%s/*"%idline) for idline in inf2]))
+ouf.write("#!/bin/bash")
 
 for idline in inf2:
 	cdline = "cd %s\n\n"%("/".join(idline.split("/")[:-1]))
