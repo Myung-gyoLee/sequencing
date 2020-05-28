@@ -79,7 +79,7 @@ create_plot(analysis_type, analysis1, plot_name, 500, 500)
 ##----------------------------------------------------------------------------------##
 ## function
 ##----------------------------------------------------------------------------------##
-## if cluster condition ÇÊ¿ä ¾øÀ¸¸é df <- d 
+## if cluster condition Ã‡ÃŠÂ¿Ã¤ Â¾Ã¸Ã€Â¸Â¸Ã© df <- d 
 gsymbol_input <- function(d,cluster_num){
   df <- d[d$cluster == cluster_num,] # df <- d
   cat("print head of data frame")
@@ -113,7 +113,7 @@ entrez_input <- function(gene){
 }
 
 
-# ¹Ýµå½Ã analysis_type ÁöÁ¤ 
+# Â¹ÃÂµÃ¥Â½Ãƒ analysis_type ÃÃ¶ÃÂ¤ 
 anno_cluster_enrich <- function(analysis_type, geneList, res_entrez){
   gene <- names(geneList)[abs(geneList) >= 0.58]
   cat("print cut-off gene list")
