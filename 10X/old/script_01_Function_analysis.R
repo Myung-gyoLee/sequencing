@@ -325,7 +325,7 @@ hsa04612 <- pathview(gene.data  = kk1@result$geneID,
                      species    = "hsa",
                      limit      = list(gene=max(abs(geneList)), cpd=1))
 
-#hsa05323 https://www.genome.jp/kegg-bin/show_pathway?hsa05323 �ȵɰ�� ���� xml �ٿ�ε� 
+#hsa05323 https://www.genome.jp/kegg-bin/show_pathway?hsa05323 ¾ÈµÉ°æ¿ì Á÷Á¢ xml ´Ù¿î·Îµå 
 ##----------------------------------------------------------------------------------##
 # ### MeSH Enrichment Analysis
 # library(meshes)
