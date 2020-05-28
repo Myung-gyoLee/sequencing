@@ -1,6 +1,7 @@
 #https://yulab-smu.github.io/clusterProfiler-book/
 #https://guangchuangyu.github.io/2016/01/go-analysis-using-clusterprofiler/
-
+#Title: statistical analysis and visualization of functional profiles for genes and gene clusters
+#Version: 3.14.3
 
 library(org.Hs.eg.db)
 library(DOSE)
@@ -17,13 +18,13 @@ query(hub, "Homosapiens")
 
 #++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++#
 ### Gene mapping ###
-gsymbol_input <- function(d,cluster_num){
+gsymbol_input <- function(d,cluster_num, dfvalue){
   df <- d[d$cluster == cluster_num,] # df <- d
   cat("print head of data frame")
   cat("--------------------------------------------")
   head(df)
   table(df$cluster)
-  geneList <- df[,3]
+  geneList <- df[,dfvalue]
   cat("print all gene list")
   cat("--------------------------------------------")
   head(geneList)
@@ -36,7 +37,11 @@ gsymbol_input <- function(d,cluster_num){
   bkgd.genes.entrez <- bitr(bkgd.genes,fromType = "SYMBOL",toType = "ENTREZID",OrgDb = org.Hs.eg.db)
   return(geneList)
 }
-
+### heatplot 값 선택 
+# df <- d[d$cluster == cluster_num,]
+# geneList <- df[,5]
+# colnames(df)
+# geneList
 
 ### Entrez ID mapping ###
 entrez_input <- function(gene){
@@ -51,32 +56,41 @@ entrez_input <- function(gene){
 #++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++#
 
 
-setwd("H:SingleCell/smc024")
-setwd("./b1_b2/")
-#setwd("./b1_b2_t/")
+setwd("H:SingleCell/function_smc024")
 
-#d <- read.csv("SMC009.csv")
-d <- read.csv("b1_b2.csv")
+#d <- read.csv("smc024c11c19.csv")
+d <- read.csv("smc024_conserved.csv", row.names = 1)
 #rm(d)
-#d <- read.table("b1_b2_DEG_SCTcluster0-25_mt30_rna7000_rmMT.txt")
 head(d)
-colnames(d)=c("gene","p_val","avg_logFC","pct.1","pct.2","p_val_adj","cluster")
-
+colnames(d)[1] = "gene"
+cat(colnames(d))
+# colnames(d)=c("gene","gene_name","blood1.avgFC","tissue.avgFC","avgVolume","blood1.data_p_val","blood1.data_avg_logFC","blood1.data_pct.1","blood1.data_pct.2",
+#               "blood1.data_p_val_adj","tissue.data_p_val","tissue.data_avg_logFC","tissue.data_pct.1","tissue.data_pct.2","tissue.data_p_val_adj","max_pval","minimump_p_val","cluster")
 
 ### Get geneList << input (d, cluster_num) ###
-cluster_num = 20
-geneList <- gsymbol_input(d,cluster_num)
+# 2, 5, 7, 14, 15, 17, 22
+cluster_num = 22
+# cut off column !!!
+dfvalue = 5
+geneList <- gsymbol_input(d,cluster_num, dfvalue)
 
-gene <- names(geneList)[abs(geneList) >= 0.58]
+#gene <- names(geneList)[abs(geneList) >= 0.58]
+gene <- names(geneList)
+
 cat("print cut-off gene list\n")
 cat("--------------------------------------------\n")
 gene
 
 ### Entrez ID mapping ###
 res_entrez <- entrez_input(gene)
+if("cluster" %in% getwd()){
+  nfol = sprintf("../cluster%s",cluster_num)
+}else{nfol = sprintf("./cluster%s",cluster_num)}
 
-dir.create("./cluster20")
-setwd("./cluster20/")
+
+dir.create(nfol)
+setwd(nfol)
+
 #++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++#
 
 ### Gene annotations
@@ -91,17 +105,31 @@ library(DOSE)
 #results_anno <- geneAnnotations(input=results, keys=row.names(results), column=c("ENTREZID", "ENSEMBL"), keytype="SYMBOL", organism = "human")
 
 ego <- enrichGO(gene         = gene,
-                 OrgDb         = org.Hs.eg.db,
-                 keyType       = 'SYMBOL',
-                 ont           = "CC",
-                 pAdjustMethod = "BH",
-                 pvalueCutoff  = 0.01,
-                 qvalueCutoff  = 0.05)
+                OrgDb         = org.Hs.eg.db,
+                keyType       = 'SYMBOL',
+                ont           = "CC",
+                pAdjustMethod = "BH",
+                pvalueCutoff  = 0.01,
+                qvalueCutoff  = 0.05)
 head(summary(ego))
 
 
+egobp <- enrichGO(gene         = gene,
+                  OrgDb         = org.Hs.eg.db,
+                  keyType       = 'SYMBOL',
+                  ont           = "BP",
+                  pAdjustMethod = "BH",
+                  pvalueCutoff  = 0.01,
+                  qvalueCutoff  = 0.05)
 
 
+egomf <- enrichGO(gene         = gene,
+                  OrgDb         = org.Hs.eg.db,
+                  keyType       = 'SYMBOL',
+                  ont           = "MF",
+                  pAdjustMethod = "BH",
+                  pvalueCutoff  = 0.01,
+                  qvalueCutoff  = 0.05)
 
 ### MSigDb analysis
 #BiocManager::install("msigdbr")
@@ -186,13 +214,13 @@ nrow(res_entrez)
 library(DOSE)
 
 edo <- enrichDO(gene = res_entrez,
-              ont = "DO",
-              pvalueCutoff = 0.05,
-              pAdjustMethod = "BH",
-              minGSSize     = 5,
-              maxGSSize     = 500,
-              qvalueCutoff  = 0.05,
-              readable      = FALSE)
+                ont = "DO",
+                pvalueCutoff = 0.05,
+                pAdjustMethod = "BH",
+                minGSSize     = 5,
+                maxGSSize     = 500,
+                qvalueCutoff  = 0.05,
+                readable      = FALSE)
 
 
 ### enrichNCG : Network of Cancer Gene (NCG)(A. et al. 2016)
@@ -243,23 +271,57 @@ head(gkk)
 ekk <- enrichKEGG(gene     = res_entrez,
                   organism     = 'hsa',
                   pvalueCutoff = 0.05)
+
+
+
+ekk@result$Description
+ekk@result$ID %>% sort
 head(ekk)
 
-#filekg=sprintf("keggresult%s.csv",Sys.Date())
-#write.csv(kk2@result,file = filekg)
+filekg=sprintf("keggresult%s.csv",Sys.Date())
+write.csv(ekk@result,file = filekg)
 
-# library("pathview")
-# hsa04110 <- pathview(gene.data  = geneList,
-#                      pathway.id = "hsa05034",
-#                      species    = "hsa",
-#                      limit      = list(gene=max(abs(geneList)), cpd=1))
+ekkR <- setReadable(ekk, 'org.Hs.eg.db', 'ENTREZID')
+#ekkR
+filekg=sprintf("keggresult%s.csv",Sys.Date())
+write.csv(ekkR@result,file = filekg)
+
+ekklist=ekk@result$ID[abs(ekk@result$p.adjust) < 0.05]
+keggabs = sprintf("%s  %s  %s",ekklist, ekk@result$Description[abs(ekk@result$p.adjust) < 0.05], ekkR@result$geneID[abs(ekkR@result$p.adjust) < 0.05])
+keggabs
+fileakg=sprintf("kegg_adjpvaue%s.csv",Sys.Date())
+write.csv(keggabs,file = fileakg)
+
+
+ekk@result$p.adjust
+
+egeneL = geneList
+#str(egeneL)
+egeneL[1:length(egeneL)] = 1
+#egeneL
+
+library("pathview")
+for(i in ekklist){
+  pathview(gene.data  = res_entrez,
+           pathway.id = i,
+           species    = "hsa",
+           limit      = list(gene=max(abs(egeneL)), cpd=1))
+}
+# hsa04141 <- pathview(gene.data  = res_entrez,
+#                       pathway.id = "hsa04141",
+#                       species    = "hsa",
+#                       limit      = list(gene=max(abs(geneList)), cpd=1))
 
 #++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++#
 # save(list=ls(), file='SMC009.Rdata')
 
 ### Gene Set Enrichment Analysis
-
+# ego -> ego Cellular Component
 head(ego)
+# Biological Process
+head(egobp)
+# Molecular Function
+head(egomf)
 head(em2)
 head(gs2)
 head(em5)
@@ -298,4 +360,3 @@ DT::datatable(as.data.frame(y))
 # str(gene)
 # str(cstsp1)
 # cstsp1=cstsp1[[1]]
-
