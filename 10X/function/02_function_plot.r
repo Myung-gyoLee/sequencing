@@ -48,6 +48,9 @@ png(filename = fileeg3, height=800, width=800, bg="white")
 emapplot(ego3, showCategory = 50)
 dev.off()
 
+#axis.text.x = element_text(size = 15 ... : x axis label size
+#axis.text.y = element_text(size = 15 ... : y axis label size
+
 ##================= egobp =====================##
 analysis_type1 = "egobp"
 ego3 <- egobp
@@ -76,12 +79,18 @@ if (analysis_type1 %in% c("edo", "ncg", "dgn", "gkk", "ekk")){
 
 file1eg=sprintf("%s_Dotplot%s.png", analysis_type1, Sys.Date())
 png(filename = file1eg, height=500, width=600, bg="white")
-dotplot(ego3, showCategory=30)
+dotplot(ego3, showCategory=30) +theme(panel.grid.major = element_blank(),
+                                      axis.text.y = element_text(size = 14, angle = 0))
 dev.off()
 
 file1egh1=sprintf("%s_heatplot%s.png",analysis_type1,Sys.Date())
 png(filename = file1egh1, height=450, width=1200, bg="white")
-heatplot(edox, showCategory=30, foldChange = geneList)
+heatplot(edox, showCategory=30, foldChange = geneList)  +
+theme(panel.grid.major = element_blank(),
+      axis.text.x = element_text(size = 14, angle = 90, vjust = 0.5, hjust = 1), 
+      #axis.text.x = element_text(size = 15, angle = 60, hjust = 1), 
+      axis.text.y = element_text(size = 14, angle = 0))
+#heatplot.enrichResult(edox, showCategory=30, foldChange = geneList)
 dev.off()
 
 
@@ -130,12 +139,17 @@ if (analysis_type2 %in% c("edo", "ncg", "dgn", "gkk", "ekk")){
 
 file2eg=sprintf("%s_Dotplot%s.png", analysis_type2, Sys.Date())
 png(filename = file2eg, height=300, width=500, bg="white")
-dotplot(ego1, showCategory=30)
+dotplot(ego1, showCategory=30) +theme(panel.grid.major = element_blank(),
+                                      axis.text.y = element_text(size = 14, angle = 0))
 dev.off()
 
 file2egh1=sprintf("%s_heatplot%s.png",analysis_type2,Sys.Date())
 png(filename = file2egh1, height=250, width=750, bg="white")
-heatplot(edox1, showCategory=30, foldChange = geneList)
+heatplot(edox1, showCategory=30, foldChange = geneList) +
+  theme(panel.grid.major = element_blank(),
+        axis.text.x = element_text(size = 14, angle = 90, vjust = 0.5, hjust = 1), 
+        #axis.text.x = element_text(size = 15, angle = 60, hjust = 1), 
+        axis.text.y = element_text(size = 14, angle = 0))
 dev.off()
 
 
@@ -154,4 +168,5 @@ file2eg3=sprintf("%s_emapplot%s.png", analysis_type2, Sys.Date())
 png(filename = file2eg3, height=400, width=400, bg="white")
 emapplot(ego1, showCategory = 20)
 dev.off()
+
 
