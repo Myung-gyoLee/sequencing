@@ -4,7 +4,7 @@ import pandas as pd
 import os
 import time
 
-
+#val_P[48] : "Subcellular location", val_P[49] : "Secretome location", 
 #==========>
 def extract_protein(projectN,clusterN,inputgene):
 	import re
@@ -12,7 +12,7 @@ def extract_protein(projectN,clusterN,inputgene):
 	oufname = "/media/cytogenbi2/8e7f6c8b-bc45-4c58-816f-a062fd95b91a/singlecell_protein/%s/%s.txt"%(projectN,clusterN)
 	ouf = open(oufname,"w")
 	col = proteinD["Gene"].split("\t")
-	colist = ["Gene",col[6],col[12],col[15],col[20],col[23],col[28],col[31],"Cancer prognostic","Cancer prognostic favourable","Cancer prognostic unfavourable","\n"]
+	colist = ["Gene",col[6],col[12],col[15],col[20],col[23],col[28],col[31],"Cancer prognostic","Cancer prognostic favourable","Cancer prognostic unfavourable",col[48],col[49],"\n"]
 	ouf.write("\t".join(colist))
 	print(colist)
 	noresult=[]
@@ -37,11 +37,11 @@ def extract_protein(projectN,clusterN,inputgene):
 						prol.append(a)
 				prolval=["%s(%s)"%(prognosticD[str(a.split("_")[0])],a.split("_")[1]) for a in prol]
 				unprolval=["%s(%s)"%(prognosticD[str(a.split("_")[0])],a.split("_")[1]) for a in unprol]
-				print('"%s"'%cgene,val_P[6],val_P[12],tissuespec,val_P[20],cancerfpkm,val_P[28],bloodspec,'"%s"'%(",".join(cancerl)))
-				wlinel = ['"%s"'%cgene,val_P[6],val_P[12],tissuespec,val_P[20],cancerfpkm,val_P[28],bloodspec,'"prognostic"','"%s"'%(",".join(prolval)),'"%s"'%(",".join(unprolval)),"\n"]
+				wlinel = ['"%s"'%cgene,val_P[6],val_P[12],tissuespec,val_P[20],cancerfpkm,val_P[28],bloodspec,'"prognostic"','"%s"'%(",".join(prolval)),'"%s"'%(",".join(unprolval)),val_p[48],val_P[49],"\n"]
 				writeline = "\t".join(wlinel)
+				print(writeline)
 			else : 
-				wlinel = ['"%s"'%cgene,val_P[6],val_P[12],tissuespec,val_P[20],cancerfpkm,val_P[28],bloodspec,"not prognostic","","","\n"]
+				wlinel = ['"%s"'%cgene,val_P[6],val_P[12],tissuespec,val_P[20],cancerfpkm,val_P[28],bloodspec,'"not prognostic"',"","",val_p[48],val_P[49],"\n"]
 				writeline = "\t".join(wlinel)
 		except KeyError:
 			if cgene in proteinD.values():
@@ -72,12 +72,13 @@ def protein_annotation(sheetname,writer):
 	joinname = "%sjoin"%(sheetlname)
 	vars()[joinname] = pd.merge(vars()[sheetlname],vars()[resname],
 	how = 'left',
-	left_on = 'gene',
+	#left_on = 'gene',
+	left_on = 'Gene',
 	right_on = 'Gene', 
 	sort = False)
 	#print(vars()[joinname].columns)
 	print(vars()[joinname].head())
-	vars()[joinname].to_excel(writer, sheet_name= sheetname)
+	vars()[joinname].drop_duplicates().to_excel(writer, sheet_name= sheetname)
 
 
 # extract gene name
@@ -93,14 +94,22 @@ prognosticD = {"0":"Breast cancer","1":"Cervical cancer","2":"Colorectal cancer"
 
 # 1. read raw input per sheet
 
-"""cytogenbi2@cytogenbi2-B365M-DS3H:/media/cytogenbi2/8e7f6c8b-bc45-4c58-816f-a062fd95b91a/singlecell_protein$ ls
+"""
+/media/cytogenbi2/8e7f6c8b-bc45-4c58-816f-a062fd95b91a/singlecell_protein/
 SMC024_B1Tissue_Conserved_Markers.xlsx
 SMC024_B1Tissue_Differential_Expressed_Markers.xlsx
 SMC025_B1Tissue_Conserved_Markers.xlsx
 SMC025_B1Tissue_Differential_Expressed_Markers.xlsx
 
+/media/cytogenbi2/8e7f6c8b-bc45-4c58-816f-a062fd95b91a/singlecell_protein/20200605_SMC027_result/
+SMC024-025-027_Marker_Annotation.xlsx
+SMC027_B1Tissue_Conserved_Markers.xlsx
+SMC027_B1Tissue_Differential_Expressed_Markers.xlsx
+
+
 """
-infname = '/media/cytogenbi2/8e7f6c8b-bc45-4c58-816f-a062fd95b91a/singlecell_protein/raw/SMC025_B1Tissue_Differential_Expressed_Markers.xlsx'
+#infname = '/media/cytogenbi2/8e7f6c8b-bc45-4c58-816f-a062fd95b91a/singlecell_protein/raw/SMC025_B1Tissue_Differential_Expressed_Markers.xlsx'
+infname = '/media/cytogenbi2/8e7f6c8b-bc45-4c58-816f-a062fd95b91a/singlecell_protein/20200605_SMC027_result/SMC024-025-027_Marker_Annotation.xlsx'
 smc025conf = pd.ExcelFile(infname)
 projectN = infname.split('/')[-1].split('.')[0]
 directory = "/media/cytogenbi2/8e7f6c8b-bc45-4c58-816f-a062fd95b91a/singlecell_protein/%s"%(projectN)
@@ -119,7 +128,9 @@ for sheetname in s025con_sheetl:
 	sheetlname = "%s_%s"%(projectN,sheetname)
 	parsesheetl.append(sheetlname)
 	vars()[sheetlname] = smc025conf.parse(sheetname)
-	inputgene = vars()[sheetlname].gene
+	print(vars()[sheetlname].columns)
+	#inputgene = vars()[sheetlname].gene
+	inputgene = vars()[sheetlname].Gene
 	print(inputgene.head())
 	extract_protein(projectN, sheetlname,inputgene)
 
