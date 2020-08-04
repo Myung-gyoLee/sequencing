@@ -2,10 +2,11 @@
 
 # 200213_extract_metrix_meta.r
 
-setwd("H:TCGA")
+setwd("H:/TCGA/")
 load("matrixARCHs4.Rdata")
 
 
+setwd("H:/TCGA/01AllCancerTissue/")
 ## read data tables
 
 Texpression=read.csv("Bar200213TCGAAllcancer.csv")
@@ -16,15 +17,17 @@ metaG=read.csv("200214GTExmeta.csv")
 #------------------------------------------------------------------#
 ## TCGA-BRCA Primary Tumor and Metastatic Expression Table
 #colnames(metaT)
-Tbreast=metaT[grep("Breast", metaT$Tissue),]
+Tbreast=metaT[grep("Breast", metaT$Cancertype),]
 #table(Tbreast$Sampletype)
 
 # normal sample remove
 Tbreast_tumor=Tbreast[-grep("Normal", Tbreast$Sampletype),]
 #nrow(Tbreast[grep("Normal", Tbreast$Sampletype),]) # nrow=112
 #colnames(Tbreast_tumor)
-#head(Tbreast_tumor)
-#table(Tbreast_tumor$Sampletype)
+head(Tbreast_tumor)
+table(Tbreast_tumor$Sampletype)
+
+View(Tbreast_tumor)
 
 # barcode of Primary tumor and metastatic-> indexing Expression file
 Tbrca_tumor_bar=Tbreast_tumor$Sampleid
